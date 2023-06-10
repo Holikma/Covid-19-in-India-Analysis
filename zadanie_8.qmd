@@ -17,10 +17,10 @@ suppressMessages(library(tidyverse))
 suppressMessages(library(dplyr))
 suppressMessages(library(stringr))})
 
-covid <- read.csv("C:\\Users\\mares\\Desktop\\CODES\\R\\zadanie_8\\Covid 19 Confirmed Cases-Kerala.csv")
+covid <- read.csv("Covid 19 Confirmed Cases-Kerala.csv")
 covid <- separate(covid, Date, c("Year", "Month", "Day"))
 
-air_quality <- read.csv("C:\\Users\\mares\\Desktop\\CODES\\R\\zadanie_8\\air-quality-india.csv") %>% 
+air_quality <- read.csv("air-quality-india.csv") %>% 
     group_by(Year, Month, Day) %>%
     summarise(priemer = round(mean(PM2.5)), .groups = "keep")
 air_quality$Timestamp <- as.Date(with(air_quality, paste(Year, Month, Day,sep="-")), "%Y-%m-%d")
@@ -96,7 +96,7 @@ Z tabuľky si môžeme všimnúť, že najmenšie namerané hodnoty PM2.5 v ovzd
 
 ```{r}
 summary(dat$priemer)
-knitr::include_graphics("C:\\Users\\mares\\Desktop\\CODES\\R\\zadanie_8\\PM.png")
+knitr::include_graphics("PM.png")
 
 ```
 

@@ -1,0 +1,39 @@
+---
+title: "Covid-analysis"
+format: html
+editor: visual
+code-fold: true
+fontcolor: white
+backgroundcolor: black
+---
+
+## Úvod
+
+Pandémia COVID-19 vytvorila obrovské množstvo údajov, ktoré umožnili výskumníkom, analytikom a vedcom údajov získať prehľad a pochopiť vplyv vírusu na rôzne aspekty nášho života. R, populárny programovací jazyk pre štatistické výpočty a analýzu údajov, poskytuje širokú škálu nástrojov a balíkov na efektívne skúmanie a analýzu súborov údajov COVID-19.
+
+V tomto projekte predstavíme niekoľko súborov údajov analýzy COVID-19, ktoré sú ľahko dostupné pre používateľov R. Tieto súbory údajov obsahujú informácie o potvrdených prípadoch, úmrtiach, testovaní, hospitalizáciách, očkovaniach a iných relevantných premenných na rôznych geografických úrovniach, ako sú globálne, národné, regionálne a lokálne. Analýza týchto súborov údajov nám môže pomôcť sledovať šírenie vírusu, identifikovať trendy a informovať o rozhodovacích procesoch.
+
+
+## Running Code
+
+
+
+```{r}
+suppressWarnings(
+    suppressMessages(
+        library(readxl, tidyr, dplyr)
+        )
+    )
+```
+
+## Výber Datasetov
+
+
+
+
+```{r}
+Raw_Covid_Dataset <- read.csv("2_covid_19_india.csv")
+Raw_CovidTest_Dataset <- read.csv("2_StatewiseTestingDetails.csv")  
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
