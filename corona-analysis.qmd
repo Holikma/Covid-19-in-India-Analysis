@@ -13,27 +13,28 @@ Pandémia COVID-19 vytvorila obrovské množstvo údajov, ktoré umožnili výsk
 
 V tomto projekte predstavíme niekoľko súborov údajov analýzy COVID-19, ktoré sú ľahko dostupné pre používateľov R. Tieto súbory údajov obsahujú informácie o potvrdených prípadoch, úmrtiach, testovaní, hospitalizáciách, očkovaniach a iných relevantných premenných na rôznych geografických úrovniach, ako sú globálne, národné, regionálne a lokálne. Analýza týchto súborov údajov nám môže pomôcť sledovať šírenie vírusu, identifikovať trendy a informovať o rozhodovacích procesoch.
 
-
-## Running Code
-
-
-
 ```{r}
-suppressWarnings(
-    suppressMessages(
-        library(readxl, tidyr, dplyr)
-        )
-    )
+suppressWarnings({
+    suppressMessages(library(readxl));
+    suppressMessages(library(tidyr));
+    suppressMessages(library(dplyr));
+    suppressMessages(library(ggplot2));
+})
 ```
 
-## Výber Datasetov
-
-
-
+## Výber a pozorovanie Datasetov
 
 ```{r}
 Raw_Covid_Dataset <- read.csv("2_covid_19_india.csv")
 Raw_CovidTest_Dataset <- read.csv("2_StatewiseTestingDetails.csv")  
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+
+```{r}
+Covid_dataset <- select(Raw_Covid_Dataset, Date, "States" = State.UnionTerritory, Cured, Deaths, Confirmed)
+
+ggplot(Covid_dataset, mapping= aes(Confirmed)) + geom_histogram()+ facet_wrap(vars(States), nrow = 5)
+
+```
+ 16. ggplot2 (local) setup_params(..., self = self)
+
