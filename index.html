@@ -92,19 +92,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="index_files/libs/quarto-html/anchor.min.js"></script>
 <link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="index_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<link href="index_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
 
-<body class="fullcontent">
+<body>
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-full">
 
-<main class="content" id="quarto-document-content">
+<main class="content column-page" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -135,36 +135,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">suppressMessages</span>(<span class="fu">library</span>(tidyr));</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">suppressMessages</span>(<span class="fu">library</span>(dplyr));</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">suppressMessages</span>(<span class="fu">library</span>(ggplot2));</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">suppressMessages</span>(<span class="fu">library</span>(sf));</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">suppressMessages</span>(<span class="fu">library</span>(leaflet));</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
-<section id="výber-a-pozorovanie-datasetov" class="level2">
-<h2 class="anchored" data-anchor-id="výber-a-pozorovanie-datasetov">Výber a pozorovanie Datasetov</h2>
+<section id="pozorovanie-datasetov" class="level2">
+<h2 class="anchored" data-anchor-id="pozorovanie-datasetov">Pozorovanie Datasetov</h2>
+<p>Na analýzu Denné hodnoty úmrtí, vyliečení a potvrdených prípadov sa nachádza v súbore covid_19_india.csv Hodnoty celoštátneho testovania sa nachádzajú v covid_vaccine_statewise.csv</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Raw_Covid_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"2_covid_19_india.csv"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Raw_CovidTest_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"2_StatewiseTestingDetails.csv"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sf <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">"archive/output.shp"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Raw_Covid_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"datasets/2_covid_19_india.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Raw_CovidTest_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"datasets/2_StatewiseTestingDetails.csv"</span>)  </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>Raw_CovidStates_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"datasets/2_covid_vaccine_statewise.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Covid_dataset <span class="ot">&lt;-</span> <span class="fu">select</span>(Raw_Covid_Dataset, Date, <span class="st">"States"</span> <span class="ot">=</span> State.UnionTerritory, Cured, Deaths, Confirmed)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(Covid_dataset, <span class="at">mapping=</span> <span class="fu">aes</span>(Confirmed)) <span class="sc">+</span> <span class="fu">geom_histogram</span>()<span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(States), <span class="at">nrow =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Covid_dataset <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(States) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">COUNT =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 46 × 2
+   States                           COUNT
+   &lt;chr&gt;                            &lt;int&gt;
+ 1 Andaman and Nicobar Islands        504
+ 2 Andhra Pradesh                     518
+ 3 Arunachal Pradesh                  496
+ 4 Assam                              498
+ 5 Bihar                              506
+ 6 Bihar****                            2
+ 7 Cases being reassigned to states    60
+ 8 Chandigarh                         511
+ 9 Chhattisgarh                       511
+10 Dadra and Nagar Haveli               2
+# ℹ 36 more rows</code></pre>
 </div>
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
-</div>
-<ol start="16" type="1">
-<li>ggplot2 (local) setup_params(…, self = self)</li>
-</ol>
 </section>
 
 </main>

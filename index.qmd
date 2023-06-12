@@ -3,8 +3,7 @@ title: "Covid-analysis"
 format: html
 editor: visual
 code-fold: true
-fontcolor: white
-backgroundcolor: black
+page-layout: full
 ---
 
 ## Úvod
@@ -32,7 +31,7 @@ Hodnoty celoštátneho testovania sa nachádzajú v covid_vaccine_statewise.csv
 
 
 ```{r}
-sf <- sf::read_sf("archive/output.shp")
+nc <- st_read("India-map/India_State_Boundary.shp", quiet=TRUE)
 Raw_Covid_Dataset <- read.csv("datasets/2_covid_19_india.csv")
 Raw_CovidTest_Dataset <- read.csv("datasets/2_StatewiseTestingDetails.csv")  
 Raw_CovidStates_Dataset <- read.csv("datasets/2_covid_vaccine_statewise.csv")
@@ -40,6 +39,8 @@ Raw_CovidStates_Dataset <- read.csv("datasets/2_covid_vaccine_statewise.csv")
 
 ```{r}
 Covid_dataset <- select(Raw_Covid_Dataset, Date, "States" = State.UnionTerritory, Cured, Deaths, Confirmed)
-Covid_dataset %>% group_by(States) %>% summarise(COUNT = n())
+new <- Covid_dataset %>% group_by(States) %>% summarise(COUNT = n()) %>% filter_all(any_vars(COUNT > 10))
+ggplot(nc) + geom_sf() + scale_fill_viridis_c()
+
 ```
 
