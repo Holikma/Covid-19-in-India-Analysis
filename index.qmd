@@ -29,12 +29,11 @@ Raw_Covid_Dataset <- read.csv("2_covid_19_india.csv")
 Raw_CovidTest_Dataset <- read.csv("2_StatewiseTestingDetails.csv")  
 ```
 
-
 ```{r}
 Covid_dataset <- select(Raw_Covid_Dataset, Date, "States" = State.UnionTerritory, Cured, Deaths, Confirmed)
 
 ggplot(Covid_dataset, mapping= aes(Confirmed)) + geom_histogram()+ facet_wrap(vars(States), nrow = 5)
 
 ```
- 16. ggplot2 (local) setup_params(..., self = self)
 
+16. ggplot2 (local) setup_params(..., self = self)
