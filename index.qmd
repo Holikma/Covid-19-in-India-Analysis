@@ -19,21 +19,27 @@ suppressWarnings({
     suppressMessages(library(tidyr));
     suppressMessages(library(dplyr));
     suppressMessages(library(ggplot2));
+    suppressMessages(library(sf));
+    suppressMessages(library(leaflet));
 })
 ```
 
-## Výber a pozorovanie Datasetov
+## Pozorovanie Datasetov
+
+Na analýzu 
+Denné hodnoty úmrtí, vyliečení a potvrdených prípadov sa nachádza v súbore covid_19_india.csv
+Hodnoty celoštátneho testovania sa nachádzajú v covid_vaccine_statewise.csv
+
 
 ```{r}
-Raw_Covid_Dataset <- read.csv("2_covid_19_india.csv")
-Raw_CovidTest_Dataset <- read.csv("2_StatewiseTestingDetails.csv")  
+sf <- sf::read_sf("archive/output.shp")
+Raw_Covid_Dataset <- read.csv("datasets/2_covid_19_india.csv")
+Raw_CovidTest_Dataset <- read.csv("datasets/2_StatewiseTestingDetails.csv")  
+Raw_CovidStates_Dataset <- read.csv("datasets/2_covid_vaccine_statewise.csv")
 ```
 
 ```{r}
 Covid_dataset <- select(Raw_Covid_Dataset, Date, "States" = State.UnionTerritory, Cured, Deaths, Confirmed)
-
-ggplot(Covid_dataset, mapping= aes(Confirmed)) + geom_histogram()+ facet_wrap(vars(States), nrow = 5)
-
+Covid_dataset %>% group_by(States) %>% summarise(COUNT = n())
 ```
 
-16. ggplot2 (local) setup_params(..., self = self)
