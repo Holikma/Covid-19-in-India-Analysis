@@ -143,11 +143,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="pozorovanie-datasetov" class="level2">
 <h2 class="anchored" data-anchor-id="pozorovanie-datasetov">Pozorovanie Datasetov</h2>
-<p>Na analýzu Denné hodnoty úmrtí, vyliečení a potvrdených prípadov sa nachádza v súbore covid_19_india.csv Hodnoty celoštátneho testovania sa nachádzajú v covid_vaccine_statewise.csv</p>
+<p>Denné hodnoty úmrtí, vyliečení a potvrdených prípadov v rozličných štátoch Indie sa nachádza v súbore covid_19_india.csv Hodnoty celoštátnych testovanií jednotlivých štátov sa nachádzajú v covid_vaccine_statewise.csv Dáta obsahujúce hodnoty o očkovaní (kedy, koľko dávok, aký typ vakcinácie, pohlavie) sa nachádza v súbore 2_StatewiseTestingDetails.csv</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sf <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">"archive/output.shp"</span>)</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nc <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"India-map/India_State_Boundary.shp"</span>, <span class="at">quiet=</span><span class="cn">TRUE</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Raw_Covid_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"datasets/2_covid_19_india.csv"</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Raw_CovidTest_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"datasets/2_StatewiseTestingDetails.csv"</span>)  </span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>Raw_CovidStates_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"datasets/2_covid_vaccine_statewise.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -157,23 +157,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Covid_dataset <span class="ot">&lt;-</span> <span class="fu">select</span>(Raw_Covid_Dataset, Date, <span class="st">"States"</span> <span class="ot">=</span> State.UnionTerritory, Cured, Deaths, Confirmed)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Covid_dataset <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(States) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">COUNT =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>new <span class="ot">&lt;-</span> Covid_dataset <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(States) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">COUNT =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="fu">filter_all</span>(<span class="fu">any_vars</span>(COUNT <span class="sc">&gt;</span> <span class="dv">10</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nc) <span class="sc">+</span> <span class="fu">geom_sf</span>() <span class="sc">+</span> <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title =</span> <span class="fu">element_blank</span>(), <span class="at">axis.text =</span> <span class="fu">element_blank</span>(), <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 46 × 2
-   States                           COUNT
-   &lt;chr&gt;                            &lt;int&gt;
- 1 Andaman and Nicobar Islands        504
- 2 Andhra Pradesh                     518
- 3 Arunachal Pradesh                  496
- 4 Assam                              498
- 5 Bihar                              506
- 6 Bihar****                            2
- 7 Cases being reassigned to states    60
- 8 Chandigarh                         511
- 9 Chhattisgarh                       511
-10 Dadra and Nagar Haveli               2
-# ℹ 36 more rows</code></pre>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>

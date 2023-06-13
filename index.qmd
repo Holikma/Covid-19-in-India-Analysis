@@ -25,10 +25,9 @@ suppressWarnings({
 
 ## Pozorovanie Datasetov
 
-Na analýzu 
-Denné hodnoty úmrtí, vyliečení a potvrdených prípadov sa nachádza v súbore covid_19_india.csv
-Hodnoty celoštátneho testovania sa nachádzajú v covid_vaccine_statewise.csv
-
+Denné hodnoty úmrtí, vyliečení a potvrdených prípadov v rozličných štátoch Indie sa nachádza v súbore covid_19_india.csv
+Hodnoty celoštátnych testovanií jednotlivých štátov sa nachádzajú v covid_vaccine_statewise.csv
+Dáta obsahujúce hodnoty o očkovaní (kedy, koľko dávok, aký typ vakcinácie, pohlavie) sa nachádza v súbore 2_StatewiseTestingDetails.csv
 
 ```{r}
 nc <- st_read("India-map/India_State_Boundary.shp", quiet=TRUE)
@@ -40,7 +39,10 @@ Raw_CovidStates_Dataset <- read.csv("datasets/2_covid_vaccine_statewise.csv")
 ```{r}
 Covid_dataset <- select(Raw_Covid_Dataset, Date, "States" = State.UnionTerritory, Cured, Deaths, Confirmed)
 new <- Covid_dataset %>% group_by(States) %>% summarise(COUNT = n()) %>% filter_all(any_vars(COUNT > 10))
-ggplot(nc) + geom_sf() + scale_fill_viridis_c()
+ggplot(nc) + geom_sf() + scale_fill_viridis_c() + theme(axis.title = element_blank(), axis.text = element_blank(), axis.ticks = element_blank())
+
 
 ```
+
+
 
