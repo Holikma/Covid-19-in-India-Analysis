@@ -31,31 +31,68 @@ Hodnoty celoštátnych testovanií jednotlivých štátov sa nachádzajú v covi
 Dáta obsahujúce hodnoty o očkovaní (kedy, koľko dávok, aký typ vakcinácie, pohlavie) sa nachádza v súbore 2_StatewiseTestingDetails.csv
 
 ```{r}
-nc <- st_read("India-map/India_State_Boundary.shp", quiet=TRUE)
-Raw_Covid_Dataset <- read.csv("datasets/2_covid_19_india.csv")
-Raw_CovidTest_Dataset <- read.csv("datasets/2_StatewiseTestingDetails.csv")  
-Raw_CovidStates_Dataset <- read.csv("datasets/2_covid_vaccine_statewise.csv")
-Working_CovidStates_Dataset <- Raw_CovidStates_Dataset %>%
+Clean_Vaccination_Dataset <- read.csv("datasets/2_covid_vaccine_statewise.csv") %>%
     rename("Muži" = "Male.Individuals.Vaccinated.", 
            "Ženy" = "Female.Individuals.Vaccinated.", 
            "Trans" = "Transgender.Individuals.Vaccinated.",
            "18-44" = "X18.44.Years.Individuals.Vaccinated.",
            "45-60" = "X45.60.Years.Individuals.Vaccinated.",
            "60+" = "X60..Years.Individuals.Vaccinated.",
-           "Celkom" = "Total.Individuals.Vaccinated",
+           "Celkom_očkovaný" = "Total.Individuals.Vaccinated",
            "Štát" = "State",
            "Dátum" = "Updated.On") %>% 
     mutate("Dátum" = dmy(Dátum)) %>%
     mutate("Dátum" = format(Dátum, "%Y-%m-%d")) %>%
-    select("Dátum", "Štát", "Muži", "Ženy", "Trans", "18-44", "45-60", "60+", "Celkom")
-    #inner_join(Raw_Covid_Dataset, by=c("Dátum" = "Date", "Štát" = "State.UnionTerritory")) %>%
-    
-    
+    select("Dátum", "Štát", "Muži", "Ženy", "Trans", "18-44", "45-60", "60+", "Celkom_očkovaný")
+
+India_Vaccination_Dataset <- Clean_Vaccination_Dataset[!is.na(Clean_Vaccination_Dataset$"Muži"),]
+
+ALL_Vaccination_Dataset <- Clean_Vaccination_Dataset %>%
+        select(-"Muži", -"Ženy", -"Trans") %>%
+        filter(Štát != "India") %>%
+        filter(complete.cases(Celkom_očkovaný))
+
+rm(Clean_Vaccination_Dataset)
 ```
 
 ```{r}
-Covid_dataset <- select(Raw_Covid_Dataset, Date, "States" = State.UnionTerritory, Cured, Deaths, Confirmed)
-new <- Covid_dataset %>% group_by(States) %>% summarise(COUNT = n()) %>% filter_all(any_vars(COUNT > 10))
+Raw_Testing_Dataset <- read.csv("datasets/2_Testing_Data.csv")
+Raw_CovidTest_Dataset <- read.csv("datasets/2_StatewiseTestingDetails.csv") %>%
+    rename("Dátum" = "Date",
+           "Štát" = "State",
+           "Počet_Testov" = "TotalSamples",
+           "Negatívne" = "Negative",
+           "Pozitívne" = "Positive") %>%
+    select(-"Negatívne") %>%
+    filter(complete.cases(Pozitívne)) %>%
+    arrange(Dátum) 
+ #   mutate(Percento_Testovania = round(Pozitívne/Počet_Testov, 3))
+Raw_CovidTest_Dataset$Dátum <- as.Date(Raw_CovidTest_Dataset$Dátum)
+Raw_Covid_Dataset <- read.csv("datasets/2_covid_19_india.csv") %>%
+    rename("Dátum" = "Date", 
+           "Štát" = "State.UnionTerritory",
+           "Indovia" = "ConfirmedIndianNational",
+           "Celosvetovo" = "ConfirmedForeignNational",
+           "Vyliečený" = "Cured",
+           "Úmrtia" = "Deaths",
+           "Potvrdené" = "Confirmed") %>%
+    select(-"Sno", -"Time", -"Indovia", -"Celosvetovo")
+    
+
+Raw_Covid_Dataset$Dátum <- as.Date(Raw_Covid_Dataset$Dátum) - days(1)
+
+ALL_Covid_Dataset <- merge(Raw_CovidTest_Dataset, Raw_Covid_Dataset, by=c("Dátum" = "Dátum", "Štát" = "Štát"), all = TRUE) %>%      
+    select("Dátum", "Štát", "Počet_Testov", "Vyliečený", "Úmrtia", "Potvrdené")
+ALL_Covid_Dataset$Percento_Testovania = round(ALL_Covid_Dataset$"Potvrdené"/ALL_Covid_Dataset$"Počet_Testov", 3)
+rm(Raw_Covid_Dataset, Raw_CovidTest_Dataset)
+
+sum(ALL_Vaccination_Dataset$Počet_Testov)
+sum(Raw_Testing_Dataset$Total.Vaccination.Doses)
+
+```
+
+```{r}
+nc <- st_read("India-map/India_State_Boundary.shp", quiet=TRUE)
 ggplot(nc) + geom_sf() + scale_fill_viridis_c() + theme(axis.title = element_blank(), axis.text = element_blank(), axis.ticks = element_blank())
 
 
