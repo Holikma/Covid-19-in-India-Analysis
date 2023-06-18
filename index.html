@@ -146,57 +146,101 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Raw_Testing_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"datasets/2_Testing_Data.csv"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Raw_CovidTest_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"datasets/2_StatewiseTestingDetails.csv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="st">"Dátum"</span> <span class="ot">=</span> <span class="st">"Date"</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Štát"</span> <span class="ot">=</span> <span class="st">"State"</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Počet_Testov"</span> <span class="ot">=</span> <span class="st">"TotalSamples"</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Negatívne"</span> <span class="ot">=</span> <span class="st">"Negative"</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Pozitívne"</span> <span class="ot">=</span> <span class="st">"Positive"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="st">"Negatívne"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="fu">complete.cases</span>(Pozitívne)) <span class="sc">%&gt;%</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(Dátum) </span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a> <span class="co">#   mutate(Percento_Testovania = round(Pozitívne/Počet_Testov, 3))</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>Raw_CovidTest_Dataset<span class="sc">$</span>Dátum <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(Raw_CovidTest_Dataset<span class="sc">$</span>Dátum)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>Raw_Covid_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"datasets/2_covid_19_india.csv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="st">"Dátum"</span> <span class="ot">=</span> <span class="st">"Date"</span>, </span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Štát"</span> <span class="ot">=</span> <span class="st">"State.UnionTerritory"</span>,</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Indovia"</span> <span class="ot">=</span> <span class="st">"ConfirmedIndianNational"</span>,</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Celosvetovo"</span> <span class="ot">=</span> <span class="st">"ConfirmedForeignNational"</span>,</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Vyliečený"</span> <span class="ot">=</span> <span class="st">"Cured"</span>,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Úmrtia"</span> <span class="ot">=</span> <span class="st">"Deaths"</span>,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Potvrdené"</span> <span class="ot">=</span> <span class="st">"Confirmed"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="st">"Sno"</span>, <span class="sc">-</span><span class="st">"Time"</span>, <span class="sc">-</span><span class="st">"Indovia"</span>, <span class="sc">-</span><span class="st">"Celosvetovo"</span>)</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>Raw_Covid_Dataset<span class="sc">$</span>Dátum <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(Raw_Covid_Dataset<span class="sc">$</span>Dátum) <span class="sc">-</span> <span class="fu">days</span>(<span class="dv">1</span>)</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>ALL_Covid_Dataset <span class="ot">&lt;-</span> <span class="fu">merge</span>(Raw_CovidTest_Dataset, Raw_Covid_Dataset, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"Dátum"</span> <span class="ot">=</span> <span class="st">"Dátum"</span>, <span class="st">"Štát"</span> <span class="ot">=</span> <span class="st">"Štát"</span>), <span class="at">all =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span>      </span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="st">"Dátum"</span>, <span class="st">"Štát"</span>, <span class="st">"Počet_Testov"</span>, <span class="st">"Vyliečený"</span>, <span class="st">"Úmrtia"</span>, <span class="st">"Potvrdené"</span>)</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>ALL_Covid_Dataset<span class="sc">$</span>Percento_Testovania <span class="ot">=</span> <span class="fu">round</span>(ALL_Covid_Dataset<span class="sc">$</span><span class="st">"Potvrdené"</span><span class="sc">/</span>ALL_Covid_Dataset<span class="sc">$</span><span class="st">"Počet_Testov"</span>, <span class="dv">3</span>)</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(Raw_Covid_Dataset, Raw_CovidTest_Dataset)</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ALL_Testing_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"datasets/2_Testing_Data.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="st">"Štát"</span> <span class="ot">=</span> <span class="st">"State.UTs"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Počet_vakcinácií"</span> <span class="ot">=</span> <span class="st">"Total.Vaccination.Doses"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Populácia_Štátu"</span> <span class="ot">=</span> <span class="st">"Population"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="st">"Dose.1"</span>, <span class="sc">-</span><span class="st">"Dose.2"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>Raw_CovidTest_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"datasets/2_StatewiseTestingDetails.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="st">"Dátum"</span> <span class="ot">=</span> <span class="st">"Date"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Štát"</span> <span class="ot">=</span> <span class="st">"State"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Počet_Testov"</span> <span class="ot">=</span> <span class="st">"TotalSamples"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Negatívne"</span> <span class="ot">=</span> <span class="st">"Negative"</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Pozitívne"</span> <span class="ot">=</span> <span class="st">"Positive"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="st">"Negatívne"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="fu">complete.cases</span>(Pozitívne)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(Dátum) </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>Raw_CovidTest_Dataset<span class="sc">$</span>Dátum <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(Raw_CovidTest_Dataset<span class="sc">$</span>Dátum)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Raw_Covid_Dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"datasets/2_covid_19_india.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="st">"Dátum"</span> <span class="ot">=</span> <span class="st">"Date"</span>, </span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Štát"</span> <span class="ot">=</span> <span class="st">"State.UnionTerritory"</span>,</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Indovia"</span> <span class="ot">=</span> <span class="st">"ConfirmedIndianNational"</span>,</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Celosvetovo"</span> <span class="ot">=</span> <span class="st">"ConfirmedForeignNational"</span>,</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Vyliečený"</span> <span class="ot">=</span> <span class="st">"Cured"</span>,</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Úmrtia"</span> <span class="ot">=</span> <span class="st">"Deaths"</span>,</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>           <span class="st">"Potvrdené"</span> <span class="ot">=</span> <span class="st">"Confirmed"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="st">"Sno"</span>, <span class="sc">-</span><span class="st">"Time"</span>, <span class="sc">-</span><span class="st">"Indovia"</span>, <span class="sc">-</span><span class="st">"Celosvetovo"</span>)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>Raw_Covid_Dataset<span class="sc">$</span>Dátum <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(Raw_Covid_Dataset<span class="sc">$</span>Dátum) <span class="sc">-</span> <span class="fu">days</span>(<span class="dv">1</span>)</span>
 <span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(ALL_Vaccination_Dataset<span class="sc">$</span>Počet_Testov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>ALL_Covid_Dataset <span class="ot">&lt;-</span> <span class="fu">merge</span>(Raw_CovidTest_Dataset, Raw_Covid_Dataset, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"Dátum"</span> <span class="ot">=</span> <span class="st">"Dátum"</span>, <span class="st">"Štát"</span> <span class="ot">=</span> <span class="st">"Štát"</span>), <span class="at">all =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span>      </span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="st">"Dátum"</span>, <span class="st">"Štát"</span>, <span class="st">"Počet_Testov"</span>, <span class="st">"Vyliečený"</span>, <span class="st">"Úmrtia"</span>, <span class="st">"Potvrdené"</span>)</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(Raw_Covid_Dataset, Raw_CovidTest_Dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> ALL_Covid_Dataset <span class="sc">%&gt;%</span> <span class="fu">aggregate</span>(Potvrdené <span class="sc">~</span> Štát, <span class="at">FUN =</span> max)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ALL_Testing_Dataset<span class="sc">$</span>Potvrdené_Prípady <span class="ot">&lt;-</span> temp<span class="sc">$</span>Potvrdené[<span class="fu">match</span>(ALL_Testing_Dataset<span class="sc">$</span>Štát, temp<span class="sc">$</span>Štát)]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(temp)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(India_Vaccination_Dataset<span class="sc">$</span>Celkom_očkovaný)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0</code></pre>
+<pre><code>[1] 250656880</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(Raw_Testing_Dataset<span class="sc">$</span>Total.Vaccination.Doses)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(ALL_Testing_Dataset<span class="sc">$</span>Počet_vakcinácií)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1771912326</code></pre>
+<pre><code>[1] 299773777</code></pre>
 </div>
 </div>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nc <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"India-map/India_State_Boundary.shp"</span>, <span class="at">quiet=</span><span class="cn">TRUE</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nc) <span class="sc">+</span> <span class="fu">geom_sf</span>() <span class="sc">+</span> <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title =</span> <span class="fu">element_blank</span>(), <span class="at">axis.text =</span> <span class="fu">element_blank</span>(), <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nc <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"India-map/India_State_Boundary.shp"</span>, <span class="at">quiet=</span><span class="cn">TRUE</span>)[<span class="sc">-</span><span class="dv">13</span>,]</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>nc <span class="ot">&lt;-</span> nc[<span class="fu">order</span>(nc<span class="sc">$</span>State_Name),]</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>nc<span class="sc">$</span>State_Name <span class="ot">&lt;-</span> ALL_Testing_Dataset<span class="sc">$</span>Štát</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rename</span>(nc, <span class="st">"Štát"</span> <span class="ot">=</span> <span class="st">"State_Name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 36 features and 1 field
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 7583508 ymin: 753607.8 xmax: 10843390 ymax: 4452638
+CRS:           NA
+First 10 features:
+                                       Štát                       geometry
+1               Andaman and Nicobar Islands MULTIPOLYGON (((10341718 14...
+17                           Andhra Pradesh MULTIPOLYGON (((9426056 217...
+28                        Arunachal Pradesh MULTIPOLYGON (((10696175 34...
+27                                    Assam MULTIPOLYGON (((10380499 28...
+35                                    Bihar MULTIPOLYGON (((9362949 318...
+3                                Chandigarh MULTIPOLYGON (((8122248 231...
+4                              Chhattisgarh MULTIPOLYGON (((8583391 335...
+19 Dadra and Nagar Haveli and Daman and Diu MULTIPOLYGON (((8223217 177...
+23                                    Delhi MULTIPOLYGON (((7914781 283...
+5                                       Goa MULTIPOLYGON (((8524319 351...</code></pre>
+</div>
+</div>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(nc) <span class="sc">+</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill=</span>ALL_Testing_Dataset<span class="sc">$</span>Potvrdené_Prípady)) <span class="sc">+</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"New Legend Title"</span>) <span class="sc">+</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.title =</span> <span class="fu">element_blank</span>(), <span class="at">axis.text =</span> <span class="fu">element_blank</span>(), <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>

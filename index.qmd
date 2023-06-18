@@ -26,9 +26,7 @@ suppressWarnings({
 
 ## Pozorovanie Datasetov
 
-Denné hodnoty úmrtí, vyliečení a potvrdených prípadov v rozličných štátoch Indie sa nachádza v súbore covid_19_india.csv
-Hodnoty celoštátnych testovanií jednotlivých štátov sa nachádzajú v covid_vaccine_statewise.csv
-Dáta obsahujúce hodnoty o očkovaní (kedy, koľko dávok, aký typ vakcinácie, pohlavie) sa nachádza v súbore 2_StatewiseTestingDetails.csv
+Denné hodnoty úmrtí, vyliečení a potvrdených prípadov v rozličných štátoch Indie sa nachádza v súbore covid_19_india.csv Hodnoty celoštátnych testovanií jednotlivých štátov sa nachádzajú v covid_vaccine_statewise.csv Dáta obsahujúce hodnoty o očkovaní (kedy, koľko dávok, aký typ vakcinácie, pohlavie) sa nachádza v súbore 2_StatewiseTestingDetails.csv
 
 ```{r}
 Clean_Vaccination_Dataset <- read.csv("datasets/2_covid_vaccine_statewise.csv") %>%
@@ -56,7 +54,11 @@ rm(Clean_Vaccination_Dataset)
 ```
 
 ```{r}
-Raw_Testing_Dataset <- read.csv("datasets/2_Testing_Data.csv")
+ALL_Testing_Dataset <- read.csv("datasets/2_Testing_Data.csv") %>%
+    rename("Štát" = "State.UTs",
+           "Počet_vakcinácií" = "Total.Vaccination.Doses",
+           "Populácia_Štátu" = "Population") %>%
+    select(-"Dose.1", -"Dose.2")
 Raw_CovidTest_Dataset <- read.csv("datasets/2_StatewiseTestingDetails.csv") %>%
     rename("Dátum" = "Date",
            "Štát" = "State",
@@ -66,8 +68,9 @@ Raw_CovidTest_Dataset <- read.csv("datasets/2_StatewiseTestingDetails.csv") %>%
     select(-"Negatívne") %>%
     filter(complete.cases(Pozitívne)) %>%
     arrange(Dátum) 
- #   mutate(Percento_Testovania = round(Pozitívne/Počet_Testov, 3))
+
 Raw_CovidTest_Dataset$Dátum <- as.Date(Raw_CovidTest_Dataset$Dátum)
+
 Raw_Covid_Dataset <- read.csv("datasets/2_covid_19_india.csv") %>%
     rename("Dátum" = "Date", 
            "Štát" = "State.UnionTerritory",
@@ -83,20 +86,32 @@ Raw_Covid_Dataset$Dátum <- as.Date(Raw_Covid_Dataset$Dátum) - days(1)
 
 ALL_Covid_Dataset <- merge(Raw_CovidTest_Dataset, Raw_Covid_Dataset, by=c("Dátum" = "Dátum", "Štát" = "Štát"), all = TRUE) %>%      
     select("Dátum", "Štát", "Počet_Testov", "Vyliečený", "Úmrtia", "Potvrdené")
-ALL_Covid_Dataset$Percento_Testovania = round(ALL_Covid_Dataset$"Potvrdené"/ALL_Covid_Dataset$"Počet_Testov", 3)
-rm(Raw_Covid_Dataset, Raw_CovidTest_Dataset)
 
-sum(ALL_Vaccination_Dataset$Počet_Testov)
-sum(Raw_Testing_Dataset$Total.Vaccination.Doses)
+rm(Raw_Covid_Dataset, Raw_CovidTest_Dataset)
 
 ```
 
 ```{r}
-nc <- st_read("India-map/India_State_Boundary.shp", quiet=TRUE)
-ggplot(nc) + geom_sf() + scale_fill_viridis_c() + theme(axis.title = element_blank(), axis.text = element_blank(), axis.ticks = element_blank())
+temp <- ALL_Covid_Dataset %>% aggregate(Potvrdené ~ Štát, FUN = max)
+ALL_Testing_Dataset$Potvrdené_Prípady <- temp$Potvrdené[match(ALL_Testing_Dataset$Štát, temp$Štát)]
+rm(temp)
 
+max(India_Vaccination_Dataset$Celkom_očkovaný)
+max(ALL_Testing_Dataset$Počet_vakcinácií)
+```
 
+```{r}
+nc <- st_read("India-map/India_State_Boundary.shp", quiet=TRUE)[-13,]
+nc <- nc[order(nc$State_Name),]
+nc$State_Name <- ALL_Testing_Dataset$Štát
+rename(nc, "Štát" = "State_Name")
 ```
 
 
-
+```{r}
+ggplot(nc) + 
+    geom_sf(aes(fill=ALL_Testing_Dataset$Potvrdené_Prípady)) + 
+    labs(fill = "New Legend Title") + 
+    scale_fill_viridis_c() + 
+    theme(axis.title = element_blank(), axis.text = element_blank(), axis.ticks = element_blank())
+```
