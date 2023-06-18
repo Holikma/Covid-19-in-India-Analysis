@@ -6,7 +6,7 @@ code-fold: true
 page-layout: full
 ---
 
-## Úvod
+## Úvod do Problematiky
 
 Pandémia COVID-19 vytvorila obrovské množstvo údajov, ktoré umožnili výskumníkom, analytikom a vedcom údajov získať prehľad a pochopiť vplyv vírusu na rôzne aspekty nášho života. R, populárny programovací jazyk pre štatistické výpočty a analýzu údajov, poskytuje širokú škálu nástrojov a balíkov na efektívne skúmanie a analýzu súborov údajov COVID-19.
 
@@ -18,13 +18,18 @@ suppressWarnings({
     suppressMessages(library(tidyr));
     suppressMessages(library(dplyr));
     suppressMessages(library(ggplot2));
+    suppressMessages(library(plotly));
     suppressMessages(library(sf));
     suppressMessages(library(leaflet));
     suppressMessages(library(lubridate));
+    suppressMessages(library(DT));
+    suppressMessages(library(htmltools));
+    suppressMessages(library(patchwork));
 })
+
 ```
 
-## Pozorovanie Datasetov
+## Pozorovanie, analýza a hypotézy z Datasetov 
 
 Denné hodnoty úmrtí, vyliečení a potvrdených prípadov v rozličných štátoch Indie sa nachádza v súbore covid_19_india.csv Hodnoty celoštátnych testovanií jednotlivých štátov sa nachádzajú v covid_vaccine_statewise.csv Dáta obsahujúce hodnoty o očkovaní (kedy, koľko dávok, aký typ vakcinácie, pohlavie) sa nachádza v súbore 2_StatewiseTestingDetails.csv
 
@@ -65,7 +70,7 @@ Raw_CovidTest_Dataset <- read.csv("datasets/2_StatewiseTestingDetails.csv") %>%
            "Počet_Testov" = "TotalSamples",
            "Negatívne" = "Negative",
            "Pozitívne" = "Positive") %>%
-    select(-"Negatívne") %>%
+    select(-"Negatívne", -"Počet_Testov") %>%
     filter(complete.cases(Pozitívne)) %>%
     arrange(Dátum) 
 
@@ -85,7 +90,7 @@ Raw_Covid_Dataset <- read.csv("datasets/2_covid_19_india.csv") %>%
 Raw_Covid_Dataset$Dátum <- as.Date(Raw_Covid_Dataset$Dátum) - days(1)
 
 ALL_Covid_Dataset <- merge(Raw_CovidTest_Dataset, Raw_Covid_Dataset, by=c("Dátum" = "Dátum", "Štát" = "Štát"), all = TRUE) %>%      
-    select("Dátum", "Štát", "Počet_Testov", "Vyliečený", "Úmrtia", "Potvrdené")
+    select("Dátum", "Štát", "Vyliečený", "Úmrtia", "Potvrdené")
 
 rm(Raw_Covid_Dataset, Raw_CovidTest_Dataset)
 
@@ -95,23 +100,97 @@ rm(Raw_Covid_Dataset, Raw_CovidTest_Dataset)
 temp <- ALL_Covid_Dataset %>% aggregate(Potvrdené ~ Štát, FUN = max)
 ALL_Testing_Dataset$Potvrdené_Prípady <- temp$Potvrdené[match(ALL_Testing_Dataset$Štát, temp$Štát)]
 rm(temp)
-
-max(India_Vaccination_Dataset$Celkom_očkovaný)
-max(ALL_Testing_Dataset$Počet_vakcinácií)
 ```
 
 ```{r}
-nc <- st_read("India-map/India_State_Boundary.shp", quiet=TRUE)[-13,]
+nc <- st_read("India-map/India_State_Boundary.shp", quiet=TRUE)[-18,]
 nc <- nc[order(nc$State_Name),]
-nc$State_Name <- ALL_Testing_Dataset$Štát
-rename(nc, "Štát" = "State_Name")
+nc$State_Name <- ALL_Testing_Dataset$Štát 
+nc$Potvrdené <- ALL_Testing_Dataset$Potvrdené_Prípady
+nc$Populácia <- ALL_Testing_Dataset$Populácia_Štátu
+nc$Vakcinácie <- ALL_Testing_Dataset$Počet_vakcinácií
+nc <- rename(nc, "Štát" = "State_Name")
 ```
-
 
 ```{r}
-ggplot(nc) + 
-    geom_sf(aes(fill=ALL_Testing_Dataset$Potvrdené_Prípady)) + 
-    labs(fill = "New Legend Title") + 
+pot <- ggplot(nc) + 
+    geom_sf(aes(fill=Potvrdené)) + 
+    labs(title = "Prípady") + 
     scale_fill_viridis_c() + 
-    theme(axis.title = element_blank(), axis.text = element_blank(), axis.ticks = element_blank())
+    theme(axis.title = element_blank(), 
+          axis.text = element_blank(), 
+          axis.ticks = element_blank(),
+          legend.title = element_blank(),
+          legend.position = "none",
+          plot.title = element_text(hjust = 0.5))
+pop <- ggplot(nc) + 
+    geom_sf(aes(fill=Populácia)) + 
+    labs(title = "Populácia") + 
+    scale_fill_viridis_c() + 
+    theme(axis.title = element_blank(), 
+          axis.text = element_blank(), 
+          axis.ticks = element_blank(),
+          legend.title = element_blank(),
+          legend.position = "none",
+          plot.title = element_text(hjust = 0.5))
+vak <- ggplot(nc) + 
+    geom_sf(aes(fill=Vakcinácie)) + 
+    labs(title = "Vakcinácie") + 
+    scale_fill_viridis_c() + 
+    theme(axis.title = element_blank(), 
+          axis.text = element_blank(), 
+          axis.ticks = element_blank(),
+          legend.title = element_blank(),
+          legend.position = "none",
+          plot.title = element_text(hjust = 0.5))
 ```
+
+```{r,fig.align='center',out.extra='angle=90',fig.show='hold', fig.width=6,fig.ncol=3}
+par(mfrow=c(1,3))
+pop
+vak
+pot
+```
+## Vývoj všetkých ochorený a vyliečených
+```{r}
+new <- ALL_Covid_Dataset %>% group_by(Dátum) %>%
+    summarize(cured = sum(Vyliečený),
+              deaths = sum(Úmrtia),
+              conf = sum(Potvrdené))
+new <- new[complete.cases(new),]
+
+
+```
+
+## kategorizácia
+Aké je skúmané obdobie?
+Výsledky skúmaného obdobia, muži ženy trans
+muži 53 percent, ženy 46 pecent 
+```{r}
+# doplniť ylabel
+vect <-  as.matrix(select(tail(India_Vaccination_Dataset, 1), Muži, Ženy, Trans)) 
+vect <- vect/ round(tail(India_Vaccination_Dataset$Celkom_očkovaný, 1), 2)
+barplot(vect, beside = TRUE, col = c("blue", "pink", "orange"))
+
+```
+
+
+veková reprezentácia
+36 percent
+```{r}
+vect <-  as.matrix(select(tail(India_Vaccination_Dataset, 1), "18-44", "45-60", "60+")) 
+vect <- vect/ round(tail(India_Vaccination_Dataset$Celkom_očkovaný, 1), 2)
+barplot(vect, beside = TRUE, col = c("blue", "pink", "orange"))
+```
+
+
+## Všeobecná tabuľka
+```{r}
+DT::datatable(ALL_Testing_Dataset, options=list(pageLength = 5),
+    caption = "tabuľka",
+    filter = "top")
+```
+
+## Percentuálna tabuľka populácie a nakazenia
+
+## Zhrnutie
