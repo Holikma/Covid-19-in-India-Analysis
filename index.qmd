@@ -160,6 +160,9 @@ new <- ALL_Covid_Dataset %>% group_by(Dátum) %>%
 new <- new[complete.cases(new),]
 
 
+ggplot(new, aes(x = Dátum, y= c(conf), color = "Dátum")) + geom_line() +
+    ggplot(new, aes(x = Dátum, y= c(cured), color = "Dátum")) + geom_line() + 
+ggplot(new, aes(x = Dátum, y= c(deaths), color = "Dátum")) + geom_line()
 ```
 
 ## kategorizácia
@@ -175,7 +178,7 @@ barplot(vect, beside = TRUE, col = c("blue", "pink", "orange"))
 ```
 
 
-veková reprezentácia
+Veková reprezentácia
 36 percent
 ```{r}
 vect <-  as.matrix(select(tail(India_Vaccination_Dataset, 1), "18-44", "45-60", "60+")) 
@@ -192,5 +195,6 @@ DT::datatable(ALL_Testing_Dataset, options=list(pageLength = 5),
 ```
 
 ## Percentuálna tabuľka populácie a nakazenia
+
 
 ## Zhrnutie
