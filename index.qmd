@@ -151,18 +151,20 @@ pop
 vak
 pot
 ```
-## Vývoj všetkých ochorený a vyliečených
+## Vývoj všetkých ochorene, color = Column)) + geom_line() + theme_minimal()
+```
+
 ```{r}
-new <- ALL_Covid_Dataset %>% group_by(Dátum) %>%
-    summarize(cured = sum(Vyliečený),
-              deaths = sum(Úmrtia),
-              conf = sum(Potvrdené))
-new <- new[complete.cases(new),]
 
 
-ggplot(new, aes(x = Dátum, y= c(conf), color = "Dátum")) + geom_line() +
-    ggplot(new, aes(x = Dátum, y= c(cured), color = "Dátum")) + geom_line() + 
-ggplot(new, aes(x = Dátum, y= c(deaths), color = "Dátum")) + geom_line()
+# Reshape the data into long format
+df_long <- tidyr::pivot_longer(df, cols = c(y1, y2, y3), names_to = "Column", values_to = "Value")
+
+# Plot the data using ggplot2
+ggplot(df_long, aes(x = x, y = Value, color = Column)) +
+  geom_line() +
+  labs(x = "X", y = "Y") +
+  theme_minimal()
 ```
 
 ## kategorizácia
