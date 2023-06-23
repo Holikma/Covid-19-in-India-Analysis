@@ -182,7 +182,7 @@ rm(new)
 
 ## kategorizácia
 
-Aké je skúmané obdobie? Výsledky skúmaného obdobia, muži ženy trans muži 53 percent, ženy 46 pecent
+Aké je skúmané obdobie? Výsledky skúmaného obdobia, muži ženy trans muži 53 percent, ženy 46 percent
 
 ```{r,fig.align='center',out.extra='angle=90',fig.show='hold', fig.width=10,fig.ncol=1,echo = FALSE}
 # doplniť ylabel
@@ -204,12 +204,6 @@ rm(vect)
 Veková reprezentácia 36 percent
 
 ## Všeobecná tabuľka
-
-```{r,echo = FALSE}
-DT::datatable(ALL_Testing_Dataset, options=list(pageLength = 5),
-    caption = "tabuľka",
-    filter = "top")
-```
 
 ## Percentuálna tabuľka populácie a nakazenia
 
