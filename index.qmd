@@ -7,9 +7,9 @@ page-layout: full
 
 ## Úvod do Problematiky
 
-Pandémia COVID-19 vytvorila obrovské množstvo údajov, ktoré umožnili výskumníkom, analytikom a vedcom údajov získať prehľad a pochopiť vplyv vírusu na rôzne aspekty nášho života. R, populárny programovací jazyk pre štatistické výpočty a analýzu údajov, poskytuje širokú škálu nástrojov a balíkov na efektívne skúmanie a analýzu súborov údajov COVID-19.
+Pandémia COVID-19 mala významný vplyv na Indiu, pričom táto krajina (ako aj ostatné krajiny) zaznamenala veľký počet prípadov a úmrtí v dôsledku vírusu. Vzniklo obrovské množstvo údajov, ktoré taktiež nemusia súvisieť s vírusom samotným ale s aspektami každodenného života, obsahujúce napríklad dáta o ovzduší, vzdelávaní alebo ekonomií, ktoré umožnili výskumníkom, analytikom a vedcom údajov získať prehľad a pochopiť vplyv vírusu na spoločnosť. 
 
-V tomto projekte predstavíme niekoľko súborov údajov analýzy COVID-19, ktoré sú ľahko dostupné pre používateľov R. Tieto súbory údajov obsahujú informácie o potvrdených prípadoch, úmrtiach, testovaní, hospitalizáciách, očkovaniach a iných relevantných premenných na rôznych geografických úrovniach, ako sú globálne, národné, regionálne a lokálne. Analýza týchto súborov údajov nám môže pomôcť sledovať šírenie vírusu, identifikovať trendy a informovať o rozhodovacích procesoch.
+V tomto projekte budú predstavené súbory údajov a ich analýza o COVID-19, ktoré sú ľahko dostupné na internete. Tieto vybrané súbory údajov obsahujú informácie o potvrdených prípadoch, úmrtiach, testovaní, hospitalizáciách, očkovaniach a iných relevantných premenných na rôznych geografických úrovniach, ako sú globálne, a regionálne. Analýza týchto súborov údajov nám môže pomôcť sledovať šírenie vírusu, identifikovať trendy a prispôsobiť dôležité rozhodnutia na základe týchto faktov.
 
 ```{r,echo = FALSE}
 suppressWarnings({
@@ -29,7 +29,7 @@ suppressWarnings({
 
 ```
 
-## Pozorovanie, analýza a hypotézy z Datasetov
+## Hypotéza: 
 
 Denné hodnoty úmrtí, vyliečení a potvrdených prípadov v rozličných štátoch Indie sa nachádza v súbore covid_19_india.csv Hodnoty celoštátnych testovanií jednotlivých štátov sa nachádzajú v covid_vaccine_statewise.csv Dáta obsahujúce hodnoty o očkovaní (kedy, koľko dávok, aký typ vakcinácie, pohlavie) sa nachádza v súbore 2_StatewiseTestingDetails.csv
 
