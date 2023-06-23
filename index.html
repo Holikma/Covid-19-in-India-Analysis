@@ -8,7 +8,7 @@
 
 <meta name="author" content="Marek Holik">
 
-<title>Covid-analysis</title>
+<title>Covid 19 Analýza</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -35,6 +35,16 @@ ul.task-list li input[type="checkbox"] {
 <link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="index_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
+<script src="index_files/libs/htmlwidgets-1.6.1/htmlwidgets.js"></script>
+<link href="index_files/libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="index_files/libs/datatables-binding-0.27/datatables.js"></script>
+<script src="index_files/libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="index_files/libs/dt-core-1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="index_files/libs/dt-core-1.12.1/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="index_files/libs/dt-core-1.12.1/js/jquery.dataTables.min.js"></script>
+<link href="index_files/libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
+<script src="index_files/libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+
 
 </head>
 
@@ -43,18 +53,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
 <div id="quarto-sidebar-toc-left" class="sidebar toc-left">
   <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+    <h2 id="toc-title">Obsah</h2>
    
   <ul class="collapse">
-  <li><a href="#úvod-do-problematiky" id="toc-úvod-do-problematiky" class="nav-link active" data-scroll-target="#úvod-do-problematiky">Úvod do Problematiky</a>
-  <ul class="collapse">
+  <li><a href="#úvod-do-problematiky" id="toc-úvod-do-problematiky" class="nav-link active" data-scroll-target="#úvod-do-problematiky">Úvod do Problematiky</a></li>
   <li><a href="#analýza-dát-a-hypotézy" id="toc-analýza-dát-a-hypotézy" class="nav-link" data-scroll-target="#analýza-dát-a-hypotézy">Analýza dát a hypotézy</a></li>
-  <li><a href="#pozorovanie" id="toc-pozorovanie" class="nav-link" data-scroll-target="#pozorovanie">pozorovanie</a></li>
-  </ul></li>
-  <li><a href="#treemap" id="toc-treemap" class="nav-link" data-scroll-target="#treemap">Treemap</a></li>
+  <li><a href="#demografia" id="toc-demografia" class="nav-link" data-scroll-target="#demografia">Demografia</a></li>
   <li><a href="#vývoj-všetkých-ochorenia" id="toc-vývoj-všetkých-ochorenia" class="nav-link" data-scroll-target="#vývoj-všetkých-ochorenia">Vývoj všetkých ochorenia</a></li>
-  <li><a href="#kategorizácia" id="toc-kategorizácia" class="nav-link" data-scroll-target="#kategorizácia">kategorizácia</a></li>
-  <li><a href="#percentuálna-tabuľka-populácie-a-nakazenia" id="toc-percentuálna-tabuľka-populácie-a-nakazenia" class="nav-link" data-scroll-target="#percentuálna-tabuľka-populácie-a-nakazenia">Percentuálna tabuľka populácie a nakazenia</a></li>
+  <li><a href="#analýza-očkovania-a-vplyv-pohlavia-na-úmrtnosť" id="toc-analýza-očkovania-a-vplyv-pohlavia-na-úmrtnosť" class="nav-link" data-scroll-target="#analýza-očkovania-a-vplyv-pohlavia-na-úmrtnosť">Analýza očkovania a vplyv pohlavia na úmrtnosť</a></li>
   <li><a href="#zhrnutie" id="toc-zhrnutie" class="nav-link" data-scroll-target="#zhrnutie">Zhrnutie</a></li>
   </ul>
 </nav>
@@ -65,7 +71,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Covid-analysis</h1>
+<h1 class="title">Covid 19 Analýza</h1>
 </div>
 
 
@@ -86,15 +92,20 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="úvod-do-problematiky" class="level1 page-columns page-full">
-<h1>Úvod do Problematiky</h1>
-<p>Pandémia COVID-19 mala významný vplyv na Indiu, pričom táto krajina (ako aj ostatné krajiny) zaznamenala veľký počet prípadov a úmrtí v dôsledku vírusu. Vzniklo obrovské množstvo údajov, ktoré taktiež nemusia súvisieť s vírusom samotným ale s aspektami každodenného života, obsahujúce napríklad dáta o ovzduší, vzdelávaní alebo ekonomií. Tieto dáta umožnili výskumníkom, analytikom a vedcom údajov získať prehľad a pochopiť vplyv vírusu na spoločnosť.</p>
+<section id="úvod-do-problematiky" class="level2">
+<h2 class="anchored" data-anchor-id="úvod-do-problematiky">Úvod do Problematiky</h2>
+<p>Pandémia COVID-19 mala významný vplyv na Indiu, pričom táto krajina (ako aj ostatné krajiny) zaznamenala veľký počet prípadov a úmrtí v dôsledku vírusu. Vzniklo obrovské množstvo údajov, ktoré taktiež nemusia súvisieť s vírusom samotným ale s aspektami každodenného života, obsahujúce napríklad dáta o ovzduší, vzdelávaní alebo ekonomií. Tieto dáta umožnili výskumníkom, analytikom a vedcom údajov získať prehľad a pochopiť vplyv vírusu na spoločnosť. V tomto projekte budú predstavené súbory údajov a ich následna analýza.</p>
+</section>
 <section id="analýza-dát-a-hypotézy" class="level2">
 <h2 class="anchored" data-anchor-id="analýza-dát-a-hypotézy">Analýza dát a hypotézy</h2>
-<p>V tomto projekte budú predstavené súbory údajov a ich následna analýza. Datasety sú verejné a ľahko dostupné na internete a obsahujú informácie o potvrdených prípadoch, úmrtiach, testovaní, hospitalizáciách, očkovaniach a iných relevantných premenných na rôznych geografických úrovniach, ako sú globálne, a regionálne. Analýza týchto súborov údajov nám môže ukázať sledovať šírenie vírusu, identifikovať trendy a prispôsobiť dôležité rozhodnutia na základe týchto faktov. Zozbierané dáta sú z časového úseku január 2020 až Máj 2021, čiže vieme aj overiť, či boli naše pozorovania vývoju pandémie pravdivé alebo nie.</p>
+<p>Datasety sú verejné a ľahko dostupné na internete a obsahujú informácie o potvrdených prípadoch, úmrtiach, testovaní, hospitalizáciách, očkovaniach a iných relevantných premenných na rôznych geografických úrovniach, ako sú globálne, a regionálne. Analýza týchto súborov údajov nám môže ukázať sledovať šírenie vírusu, identifikovať trendy a prispôsobiť dôležité rozhodnutia na základe týchto faktov. Zozbierané dáta sú z časového úseku január 2020 až Máj 2021, čiže vieme aj overiť, či boli naše pozorovania vývoju pandémie pravdivé alebo nie.</p>
 </section>
-<section id="pozorovanie" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="pozorovanie">pozorovanie</h2>
+<section id="demografia" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="demografia">Demografia</h2>
+<section id="uttar-pradesh" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="uttar-pradesh">Uttar Pradesh</h4>
+<div class="page-columns page-full"><p>Uttar Pradesh je krajina s najväčšou populáciou s počtom 200 miliónov ľudí. Keďže je to oblasť s vysoko kvalitnou pôdou a ekonomicky výhodnými podmienkami pre obyvateľov, aj hustota populácie je zo všetkých štátov v Indií najväčšia, čo znamená, že mestské oblasti sú náchylnejšie na šírenie a prenosu vírusu.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Môžeme si všimnúť, že počet vakcinovaných ľudí je tiež najväčší, ale v tabuľke počtu nakazených ľudí je na šiestej priečke, kde bolo nakazených 1,7 milióna ľudí, čo sa rovná 7% celkovej populácie štátu. <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp; Kopf, Dan; Varathan, Preeti (11 October 2017). “If Uttar Pradesh were a country”. Quartz India. Archived from the original on 22 June 2019. Retrieved 20 May 2019.</p></li><li id="fn2"><p><sup>2</sup>&nbsp;“Agriculture” (PDF). www.niti.gov.in. NITI Aayog. Retrieved 19 October 2021.</p></li></div></div>
+<p>Krajina obdržala najväčší počet dávok vakcín - približne 300 miliónov, čo je vzhľadom na počet obyvateľov 130%, čiže väčšina obyvateľstva bola zaočkovaná a preto sa vírus v tejto krajine nešíril ako by sa predpokladalo.</p>
 <div class="cell quarto-layout-panel" data-fig.ncol="3">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
@@ -120,12 +131,11 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
-<div class="page-columns page-full"><p>Uttar Pradesh je krajina s najväčšou populáciou s počtom 200 miliónov ľudí. Keďže je to oblasť s vysoko kvalitnou pôdou a ekonomicky výhodnými podmienkami pre obyvateľov, aj hustota populácie je zo všetkých štátov v Indií najväčšia, čo znamená, že mestské oblasti sú náchylnejšie na šírenie a prenosu vírusu.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Môžeme si všimnúť, že počet vakcinovaných ľudí je tiež najväčší, ale v tabuľke počtu nakazených ľudí je na šiestej priečke, kde bolo nakazených iba 7% celkovej populácie štátu.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;https://en.wikipedia.org/wiki/Uttar_Pradesh</p></li></div></div>
-<p>Krajina obdržala najväčší počet dávok vakcín - približne 300 miliónov, čo je vzhľadom na počet obyvateľov 130%, čiže väčšina obyvateľstva bola zaočkovaná a preto sa vírus v tejto krajine nešíril ako by sa predpokladalo. Na druhej strane krajina s najväčším počtom potvrdených prípadov je Maharashtra, ktorá podobne ako Uttar Pradesh má veľkú hustotu obyvateľstva, počet dávok je rovnako vysoko, okolo 125%. Mumbai, hlavné mesto Maharashtra, je najobývanejšie mesto v Indií s počtom obyvateľstva 20 miliónov. V centre sa nachádza taktiež najväčšie a najrušnejšie letisko Indie,Chhatrapati Shivaji Maharaj, s ročným obratom ľudí 48 miliónov, čiže potenciál šírenia vírus je veľmi vysoký. Taktiež ľudia neboli oboznámení s aktuálnymi protipandemickými opatreniami, keďže veľká časť obyvateľstva sú migrujúcich pracovníkov, ktorí prichádzajú z iných častí Indie za lepšími podmienkami.</p>
 </section>
-</section>
-<section id="treemap" class="level1">
-<h1>Treemap</h1>
+<section id="maharashtra" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="maharashtra">Maharashtra</h4>
+<div class="page-columns page-full"><p>Na druhej strane krajina s najväčším počtom potvrdených prípadov je Maharashtra, ktorá podobne ako Uttar Pradesh má veľkú hustotu obyvateľstva, počet dávok je rovnako vysoko, okolo 125%. Mumbai, hlavné mesto Maharashtra, je najobývanejšie mesto v Indií s počtom obyvateľstva 20 miliónov. V centre sa nachádza taktiež najväčšie a najrušnejšie letisko Indie,Chhatrapati Shivaji Maharaj, s ročným obratom ľudí 48 miliónov, čiže potenciál šírenia vírus je veľmi vysoký. Taktiež ľudia krajiny neboli oboznámení resp. nedodržiavali aktuálne protipandemicke opatrenia, keďže veľká časť obyvateľstva sú migrujúcich pracovníkov, ktorí prichádzajú z iných častí Indie za lepšími podmienkami.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn3"><p><sup>3</sup>&nbsp;Bertaud, A. (2011). Mumbai’s ill conceived Malthusian approach to development.</p></li></div></div>
+<p>Aj keď počet vakcinovaných ľudí bol relatívne vysoký, celkový počet potvrdených prípadov bolo až 6,4 milióna, čo tvorilo 4% populácie Maharashtra.</p>
 <div class="columns">
 <div class="column" style="width:40%;">
 <div class="cell">
@@ -134,55 +144,57 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div><div class="column" style="width:60%;">
-<p>text</p>
-</div>
-</div>
-</section>
-<section id="vývoj-všetkých-ochorenia" class="level1">
-<h1>Vývoj všetkých ochorenia</h1>
-<div class="columns">
-<div class="column" style="width:40%;">
-<div class="cell" data-layout-align="right">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 4
-  Dátum         cured deaths     conf
-  &lt;date&gt;        &lt;int&gt;  &lt;int&gt;    &lt;int&gt;
-1 2021-08-10 31220981 429179 32036511</code></pre>
-</div>
+<div class="cell">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-right">
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
+
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-826786b822b3f314677c" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-826786b822b3f314677c">{"x":{"filter":"none","vertical":false,"data":[["Maharashtra","Kerala","Karnataka","Tamil Nadu","Andhra Pradesh","Uttar Pradesh","West Bengal","Delhi","Chhattisgarh","Odisha","Rajasthan","Gujarat","Madhya Pradesh","Haryana","Bihar","Telangana","Punjab","Assam","Jharkhand","Uttarakhand","Jammu and Kashmir","Himachal Pradesh","Goa","Puducherry","Manipur","Tripura","Meghalaya","Chandigarh","Arunachal Pradesh","Mizoram","Nagaland","Sikkim","Ladakh","Dadra and Nagar Haveli and Daman and Diu","Lakshadweep","Andaman and Nicobar Islands"],[6363442,3586693,2921049,2579130,1985182,1708812,1534999,1436852,1003356,988997,953851,825085,791980,770114,725279,650353,599573,576149,347440,342462,322771,208616,172085,121766,105424,80660,69769,61992,50605,46320,28811,28018,20411,10654,10263,7548]],"container":"<table class=\"cell-border stripe\">\n  <thead>\n    <tr>\n      <th>Štát<\/th>\n      <th>Potvrdené_Prípady<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":6,"dom":"t","columnDefs":[{"className":"dt-right","targets":1}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[6,10,25,50,100]},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-</div>
-</div><div class="column" style="width:60%;">
-<p>text</p>
 </div>
 </div>
 </section>
-<section id="kategorizácia" class="level1">
-<h1>kategorizácia</h1>
-<p>Aké je skúmané obdobie? Výsledky skúmaného obdobia, muži ženy trans muži 53 percent, ženy 46 percent</p>
+</section>
+<section id="vývoj-všetkých-ochorenia" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="vývoj-všetkých-ochorenia">Vývoj všetkých ochorenia</h2>
+<div class="cell page-columns page-full">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="384"></p>
+</div></div></div>
+<div class="cell page-columns page-full">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="384"></p>
+</div></div></div>
+<div class="cell page-columns page-full">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="384"></p>
+</div></div></div>
+<p>Počet potvrdených prípadov sa na konci analyzovaných dát vyšplhal až na 32 miliónov, kde 31.5 miliónov bol úspešne vyliečených a okolo 500.000 bolo úmrtí. Ako môžeme vidieť na grafoch vedľa, počas prvej vlny, čiže od začiatku 2020 až do Marca 2021 bolo prípadov relatívne malé množstvo. Napriek tomu boli nemocnice v Indii plné a snažili sa vysporiadať s vyvýjajúci tlakom z narastajúcich prípadov a ošetriť čo najviac pacientov.</p>
+<div class="page-columns page-full"><p>Indická vláda prijala niekoľko opatrení na zvýšenie kapacity nemocníc vrátane zriadenia dočasných centier starostlivosti o COVID-19 a premeny hotelov a štadiónov na izolačné zariadenia. Nemocnice tiež zaviedli prísne opatrenia na kontrolu infekcie, aby zabránili šíreniu vírusu, ako je izolácia pacientov s COVID-19, používanie osobných ochranných prostriedkov (OOP) a zvýšenie frekvencie čistenia a dezinfekcie. Prudký nárast prípadov COVID-19 v Indii viedol k nedostatku lekárskeho kyslíka, ktorý je nevyhnutný na liečbu závažných prípadov ochorenia. Nemocnice sa snažia zabezpečiť dostatok kyslíka na uspokojenie dopytu, čo viedlo ku kríze verejného zdravia, preto Indická vláda podnikla kroky na riešenie nedostatku kyslíka, ako je zvýšenie výroby a dovoz kyslíka z iných krajín avšak niektorých častiach krajiny bola situácia naďalej kritická.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn4"><p><sup>4</sup>&nbsp;Kapoor, Suraj. “COVID-19 pandemic response by India and future directions.” Journal of Public Health and Primary Care 3 (2022): 56 - 62., Available from: http://www.jphpc.org/text.asp?2022/3/3/56/354819</p></li></div></div>
+<div class="page-columns page-full"><p>Počas druhej vlny , čiže v období od Marca 2021 do Mája 2021 prudko narástol počet prípadov a úmrtí. Nárast prípadov zaplavil systém zdravotnej starostlivosti, pričom nemocniciam došli postele, kyslík a ďalšie nevyhnutné zásoby. Indická vláda zaviedla blokády a iné obmedzenia,ako pokus o kontrolu šírenia vírusu, ale opatrenia boli kritizované za to, že sú príliš malé a príliš neskoro. Nárast prípadov bol pripísaný aj faktorom, ako sú veľké zhromaždenia, politické zhromaždenia a náboženské udalosti, ktoré sa mohli konať napriek riziku šírenia vírusu.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn5"><p><sup>5</sup>&nbsp;Anand, Abhishek et al.&nbsp;“Three New Estimates of India’s All-Cause Excess Mortality during the COVID-19 Pandemic.” (2021).</p></li></div></div>
+</section>
+<section id="analýza-očkovania-a-vplyv-pohlavia-na-úmrtnosť" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="analýza-očkovania-a-vplyv-pohlavia-na-úmrtnosť">Analýza očkovania a vplyv pohlavia na úmrtnosť</h2>
 <div class="cell quarto-layout-panel" data-fig.ncol="1">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" data-angle="90" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" data-angle="90" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
-<p>Veková reprezentácia 36 percent</p>
+<div class="page-columns page-full"><p>Ako sa dá vyčítať z grafov, rozdiel medzi pohlaviami je až 7 percent, čo je na prvý pohľad prirodzené. Ale z faktu, že v tomto období bol pomer mužov:žien 1000:1020, čiže žien v Indií je väčšie množstvo žien ako mužov. <a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn6"><p><sup>6</sup>&nbsp;https://www.bbc.com/news/world-asia-india-59428011</p></li></div></div>
+<div class="page-columns page-full"><p>Ženy často váhali nad prijatím očkovania z rôznych dôvodov: slabá znalosť očkovania, nedostatočná pozornosť zo strany zdravotníckych pracovníkov, informovanie sa z nespoľahlivých zdrojov a mylné predstavy o vedľajších účinkoch vakcín. Obavy o bezpečnosť a účinnosť vakcín vrátane obáv z neznámych dlhodobých účinkov, súvisiace s tehotenstvom atď..<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn7"><p><sup>7</sup>&nbsp;Massimi, A., Rosso, A., Marzuillo, C., Prencipe, G., Soccio, P.D., Adamo, G., Sturabotti, G., Vacchio, M.R., Vito, C.D., &amp; Villari, P. (2017). Childhood vaccinations. Validation of a tool for measuring knowledge, attitudes and vaccine hesitancy in pregnant women. Epidemiology, Biostatistics, and Public Health.</p></li></div></div>
+<p>Štúdia zistila, že biologické pohlavie taktiež ovplyvňuje výsledky nakazenia, pričom muži majú väčšiu komorbiditu a vyššiu úmrtnosť ako ženy, ktoré namiesto toho zaznamenali viac postihnutia a dlhšie prežitie. Ďalšia štúdia zistila, že mužské pohlavie bolo hlavným prediktorom prijatia na jednotku intenzívnej starostlivosti (JIS) v dôsledku infekcie spolu s prítomnosťou obezity, chronického ochorenia obličiek a hypertenzie.</p>
 </section>
-<section id="percentuálna-tabuľka-populácie-a-nakazenia" class="level1">
-<h1>Percentuálna tabuľka populácie a nakazenia</h1>
-</section>
-<section id="zhrnutie" class="level1">
-<h1>Zhrnutie</h1>
+<section id="zhrnutie" class="level2">
+<h2 class="anchored" data-anchor-id="zhrnutie">Zhrnutie</h2>
 </section>
 
 
