@@ -1,5 +1,5 @@
 ---
-title: "Covid 19 Analýza"
+title: "Analýza Covid-19 v Indií"
 author: "Marek Holik"
 format: html
 editor: visual
@@ -34,6 +34,7 @@ suppressWarnings({
     suppressMessages(library(patchwork));
     suppressMessages(library(treemap));
     suppressMessages(library(scales));
+    suppressMessages(library(crosstalk));
 })
 
 ```
@@ -97,14 +98,33 @@ Raw_Covid_Dataset$Dátum <- as.Date(Raw_Covid_Dataset$Dátum) - days(1)
 
 ALL_Covid_Dataset <- merge(Raw_CovidTest_Dataset, Raw_Covid_Dataset, by=c("Dátum" = "Dátum", "Štát" = "Štát"), all = TRUE) %>%      
     select("Dátum", "Štát", "Vyliečený", "Úmrtia", "Potvrdené")
-
 rm(Raw_Covid_Dataset, Raw_CovidTest_Dataset)
 
 temp <- ALL_Covid_Dataset %>% aggregate(Potvrdené ~ Štát, FUN = max)
 ALL_Testing_Dataset$Potvrdené_Prípady <- temp$Potvrdené[match(ALL_Testing_Dataset$Štát, temp$Štát)]
+ALL_Covid_Dataset <- ALL_Covid_Dataset[ALL_Covid_Dataset$Štát %in% ALL_Testing_Dataset$Štát,]
+
 rm(temp)
 
+vyvoj <- ALL_Covid_Dataset %>% group_by(Dátum) %>%
+    summarize(cured = sum(Vyliečený),
+              deaths = sum(Úmrtia),
+              conf = sum(Potvrdené))
+vyvoj <- vyvoj[complete.cases(vyvoj),]
+
 ```
+
+```{r, echo = FALSE, warning=FALSE}
+ALL_Covid_Dataset$Potvrdené <- as.numeric(as.character(ALL_Covid_Dataset$Potvrdené))
+shared_dat <- SharedData$new(ALL_Covid_Dataset)
+bscols(widths = c(NA), 
+       list(
+           plot_ly(shared_dat, x=~Dátum, y=~Potvrdené, color =~Štát, type="scatter", mode="markers", marker= list(size=~3)),
+           filter_select("Štát","Štát", shared_dat, ~Štát)
+       ))
+       
+```
+
 
 ## Demografia
 
@@ -183,35 +203,22 @@ rm(temp)
 :::
 :::
 
-## Vývoj všetkých ochorenia
+## Vývoj štatistík
 ```{r,,echo = FALSE,fig.height=2, fig.width=4,warning=FALSE}
 #| column: margin
-new <- ALL_Covid_Dataset %>% group_by(Dátum) %>%
-    summarize(cured = sum(Vyliečený),
-              deaths = sum(Úmrtia),
-              conf = sum(Potvrdené))
 
-ggplot(new, aes(x = Dátum, y = new$cured)) + geom_area(fill="cornflowerblue") +labs(x = "Dátum", y = "Počet", title = "Vyliečený") + theme_minimal() + scale_y_continuous(labels = label_number(suffix = " M", scale = 1e-6))
+
+ggplot(vyvoj, aes(x = Dátum, y = vyvoj$cured)) + geom_area(fill="cornflowerblue") +labs(x = "Dátum", y ="", title = "Počet vyliečených") + theme_minimal() + scale_y_continuous(labels = label_number(suffix = " M", scale = 1e-6))
 ```
 ```{r,,echo = FALSE,fig.height=2, fig.width=4, warning=FALSE}
 #| column: margin
-new <- ALL_Covid_Dataset %>% group_by(Dátum) %>%
-    summarize(cured = sum(Vyliečený),
-              deaths = sum(Úmrtia),
-              conf = sum(Potvrdené))
-new <- new[complete.cases(new),]
-
-ggplot(new, aes(x = Dátum, y = new$conf)) + geom_area(fill="coral1") +labs(x = "Dátum", y = "Počet", title = "Potvrdený") + theme_minimal() + scale_y_continuous(labels = label_number(suffix = " M", scale = 1e-6))
+ggplot(vyvoj, aes(x = Dátum, y = vyvoj$conf)) + geom_area(fill="coral1") +labs(x = "Dátum", y ="", title = "Počet potvrdených") + theme_minimal() + scale_y_continuous(labels = label_number(suffix = " M", scale = 1e-6))
 ```
 ```{r,,echo = FALSE, fig.height=2, fig.width=4, warning=FALSE}
 #| column: margin
-new <- ALL_Covid_Dataset %>% group_by(Dátum) %>%
-    summarize(cured = sum(Vyliečený),
-              deaths = sum(Úmrtia),
-              conf = sum(Potvrdené))
-new <- new[complete.cases(new),]
 
-ggplot(new, aes(x = Dátum, y = new$deaths)) + geom_area(fill="black") +labs(x = "Dátum", y = "Počet", title = "Úmrtia") + theme_minimal() + scale_y_continuous(labels = label_number(suffix = " M", scale = 1e-6))
+
+ggplot(vyvoj, aes(x = Dátum, y = vyvoj$deaths)) + geom_area(fill="black") +labs(x = "Dátum",y ="", title = "Počet úmrtií") + theme_minimal() + scale_y_continuous(labels = label_number(suffix = " M", scale = 1e-6))
 ```
 Počet potvrdených prípadov sa na konci analyzovaných dát vyšplhal až na 32 miliónov, kde 31.5 miliónov bol úspešne vyliečených a okolo 500.000 bolo úmrtí. Ako môžeme vidieť na grafoch vedľa, počas prvej vlny, čiže od začiatku 2020 až do Marca 2021 bolo prípadov relatívne malé množstvo. Napriek tomu boli nemocnice v Indii plné a snažili sa vysporiadať s vyvýjajúci tlakom z narastajúcich prípadov a ošetriť čo najviac pacientov. 
 
@@ -236,10 +243,15 @@ barplot(vect, beside = TRUE, col = c("blue", "pink", "orange"), ylab = "Typ vakc
 rm(vect)
 
 ```
-Ako sa dá vyčítať z grafov, rozdiel medzi pohlaviami je až 7 percent, čo je na prvý pohľad prirodzené. Ale z faktu, že v tomto období bol pomer mužov:žien 1000:1020, čiže žien v Indií je väčšie množstvo žien ako mužov.   ^[https://www.bbc.com/news/world-asia-india-59428011]
+Ako sa dá vyčítať z grafov, rozdiel medzi pohlaviami je až 7 percent, čo je na prvý pohľad prirodzené. Ale z faktu, že v tomto období bol pomer mužov:žien 1000:1020, čiže väčšie množstvo žien ako mužov.^[https://www.bbc.com/news/world-asia-india-59428011]
 
 Ženy často váhali nad prijatím očkovania z rôznych dôvodov: slabá znalosť očkovania, nedostatočná pozornosť zo strany zdravotníckych pracovníkov, informovanie sa z nespoľahlivých zdrojov a mylné predstavy o vedľajších účinkoch vakcín. Obavy o bezpečnosť a účinnosť vakcín vrátane obáv z neznámych dlhodobých účinkov, súvisiace s tehotenstvom atď..^[Massimi, A., Rosso, A., Marzuillo, C., Prencipe, G., Soccio, P.D., Adamo, G., Sturabotti, G., Vacchio, M.R., Vito, C.D., & Villari, P. (2017). Childhood vaccinations. Validation of a tool for measuring knowledge, attitudes and vaccine hesitancy in pregnant women. Epidemiology, Biostatistics, and Public Health.]
 
 Štúdia zistila, že biologické pohlavie taktiež ovplyvňuje výsledky nakazenia, pričom muži majú väčšiu komorbiditu a vyššiu úmrtnosť ako ženy, ktoré namiesto toho zaznamenali viac postihnutia a dlhšie prežitie. Ďalšia štúdia zistila, že mužské pohlavie bolo hlavným prediktorom prijatia na jednotku intenzívnej starostlivosti (JIS) v dôsledku infekcie spolu s prítomnosťou obezity, chronického ochorenia obličiek a hypertenzie.
 
 ## Zhrnutie
+
+Pandémiu vyhlásila Svetová zdravotnícka organizácia (WHO) v marci 2020 a odvtedy zasiahla milióny ľudí na celom svete. Pandémia mala významný vplyv na verejné zdravie, hospodárstvo a spoločnosť ako celok a zdôraznila dôležitosť pripravenosti a reakcie na infekčné choroby. Pandémia zasiahla rôzne krajiny rôznymi spôsobmi. 
+
+Na základe dát sa nám podarilo vizualizovať a ukázať, čo malo významný vplyv na prudký rást napríklad prípadov, úmrtí alebo očkovaní.
+
