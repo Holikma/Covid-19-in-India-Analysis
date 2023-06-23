@@ -1,15 +1,23 @@
 ---
 title: "Covid-analysis"
+author: "Marek Holik"
 format: html
 editor: visual
-page-layout: full
+reference-location: margin
+citation-location: margin
+toc: true
+toc-depth: 2
+toc-location: left
 ---
 
-## Úvod do Problematiky
+# Úvod do Problematiky
 
-Pandémia COVID-19 mala významný vplyv na Indiu, pričom táto krajina (ako aj ostatné krajiny) zaznamenala veľký počet prípadov a úmrtí v dôsledku vírusu. Vzniklo obrovské množstvo údajov, ktoré taktiež nemusia súvisieť s vírusom samotným ale s aspektami každodenného života, obsahujúce napríklad dáta o ovzduší, vzdelávaní alebo ekonomií, ktoré umožnili výskumníkom, analytikom a vedcom údajov získať prehľad a pochopiť vplyv vírusu na spoločnosť. 
+Pandémia COVID-19 mala významný vplyv na Indiu, pričom táto krajina (ako aj ostatné krajiny) zaznamenala veľký počet prípadov a úmrtí v dôsledku vírusu. Vzniklo obrovské množstvo údajov, ktoré taktiež nemusia súvisieť s vírusom samotným ale s aspektami každodenného života, obsahujúce napríklad dáta o ovzduší, vzdelávaní alebo ekonomií. Tieto dáta umožnili výskumníkom, analytikom a vedcom údajov získať prehľad a pochopiť vplyv vírusu na spoločnosť.
 
-V tomto projekte budú predstavené súbory údajov a ich analýza o COVID-19, ktoré sú ľahko dostupné na internete. Tieto vybrané súbory údajov obsahujú informácie o potvrdených prípadoch, úmrtiach, testovaní, hospitalizáciách, očkovaniach a iných relevantných premenných na rôznych geografických úrovniach, ako sú globálne, a regionálne. Analýza týchto súborov údajov nám môže pomôcť sledovať šírenie vírusu, identifikovať trendy a prispôsobiť dôležité rozhodnutia na základe týchto faktov.
+## Analýza dát a hypotézy
+
+V tomto projekte budú predstavené súbory údajov a ich následna analýza. Datasety sú verejné a ľahko dostupné na internete a obsahujú informácie o potvrdených prípadoch, úmrtiach, testovaní, hospitalizáciách, očkovaniach a iných relevantných premenných na rôznych geografických úrovniach, ako sú globálne, a regionálne. Analýza týchto súborov údajov nám môže ukázať sledovať šírenie vírusu, identifikovať trendy a prispôsobiť dôležité rozhodnutia na základe týchto faktov. Zozbierané dáta sú z časového úseku január 2020 až Máj 2021, čiže vieme aj overiť, či boli naše pozorovania vývoju pandémie pravdivé alebo nie. 
+
 
 ```{r,echo = FALSE}
 suppressWarnings({
@@ -28,11 +36,6 @@ suppressWarnings({
 })
 
 ```
-
-## Hypotéza: 
-
-Denné hodnoty úmrtí, vyliečení a potvrdených prípadov v rozličných štátoch Indie sa nachádza v súbore covid_19_india.csv Hodnoty celoštátnych testovanií jednotlivých štátov sa nachádzajú v covid_vaccine_statewise.csv Dáta obsahujúce hodnoty o očkovaní (kedy, koľko dávok, aký typ vakcinácie, pohlavie) sa nachádza v súbore 2_StatewiseTestingDetails.csv
-
 ```{r,echo = FALSE}
 Clean_Vaccination_Dataset <- read.csv("datasets/2_covid_vaccine_statewise.csv") %>%
     rename("Muži" = "Male.Individuals.Vaccinated.", 
@@ -60,9 +63,7 @@ ALL_Vaccination_Dataset <- Clean_Vaccination_Dataset %>%
         filter(complete.cases(Celkom_očkovaný))
 
 rm(Clean_Vaccination_Dataset)
-```
 
-```{r,echo = FALSE}
 ALL_Testing_Dataset <- read.csv("datasets/2_Testing_Data.csv") %>%
     rename("Štát" = "State.UTs",
            "Počet_vakcinácií" = "Total.Vaccination.Doses",
@@ -98,15 +99,15 @@ ALL_Covid_Dataset <- merge(Raw_CovidTest_Dataset, Raw_Covid_Dataset, by=c("Dátu
 
 rm(Raw_Covid_Dataset, Raw_CovidTest_Dataset)
 
-```
-
-```{r,echo = FALSE}
 temp <- ALL_Covid_Dataset %>% aggregate(Potvrdené ~ Štát, FUN = max)
 ALL_Testing_Dataset$Potvrdené_Prípady <- temp$Potvrdené[match(ALL_Testing_Dataset$Štát, temp$Štát)]
 rm(temp)
+
 ```
 
-```{r,echo = FALSE}
+## pozorovanie
+```{r,fig.align='center',out.extra='angle=90',fig.show='hold', fig.width=4,fig.ncol=3,echo = FALSE}
+
 nc <- st_read("India-map/India_State_Boundary.shp", quiet=TRUE)[-18,]
 nc <- nc[order(nc$State_Name),]
 nc$State_Name <- ALL_Testing_Dataset$Štát 
@@ -114,9 +115,7 @@ nc$Potvrdené <- ALL_Testing_Dataset$Potvrdené_Prípady
 nc$Populácia <- ALL_Testing_Dataset$Populácia_Štátu
 nc$Vakcinácie <- ALL_Testing_Dataset$Počet_vakcinácií
 nc <- rename(nc, "Štát" = "State_Name")
-```
-
-```{r,fig.align='center',out.extra='angle=90',fig.show='hold', fig.width=6,fig.ncol=3,echo = FALSE}
+nc$percento <- ALL_Testing_Dataset$Potvrdené_Prípady/ALL_Testing_Dataset$Populácia_Štátu
 pot <- ggplot(nc) + 
     geom_sf(aes(fill=Potvrdené)) + 
     labs(title = "Prípady") + 
@@ -151,22 +150,33 @@ par(mfrow=c(1,3))
 pop 
 vak 
 pot
+
 ```
+Uttar Pradesh je krajina s najväčšou populáciou s počtom 200 miliónov ľudí. Keďže je to oblasť s vysoko kvalitnou pôdou a ekonomicky výhodnými podmienkami pre obyvateľov, aj hustota populácie je zo všetkých štátov v Indií najväčšia, čo znamená, že mestské oblasti sú náchylnejšie na šírenie a prenosu vírusu.^[https://en.wikipedia.org/wiki/Uttar_Pradesh] Môžeme si všimnúť, že počet vakcinovaných ľudí je tiež najväčší, ale v tabuľke počtu nakazených ľudí je na šiestej priečke, kde bolo nakazených iba 7% celkovej populácie štátu. 
 
-## Treemap
+Krajina obdržala najväčší počet dávok vakcín - približne 300 miliónov, čo je vzhľadom na počet obyvateľov 130%, čiže väčšina obyvateľstva bola zaočkovaná a preto sa vírus v tejto krajine nešíril ako by sa predpokladalo. Na druhej strane krajina s najväčším počtom potvrdených prípadov je Maharashtra, ktorá podobne ako Uttar Pradesh má veľkú hustotu obyvateľstva, počet dávok je rovnako vysoko, okolo 125%. Mumbai, hlavné mesto Maharashtra, je najobývanejšie mesto v Indií s počtom obyvateľstva 20 miliónov. V centre sa nachádza taktiež najväčšie a najrušnejšie letisko Indie,Chhatrapati Shivaji Maharaj, s ročným obratom ľudí 48 miliónov, čiže potenciál šírenia vírus je veľmi vysoký. Taktiež ľudia neboli oboznámení s aktuálnymi protipandemickými opatreniami, keďže veľká časť obyvateľstva sú migrujúcich pracovníkov, ktorí prichádzajú z iných častí Indie za lepšími podmienkami.    
 
-```{r, fig.align='center', fig.width=10,echo = FALSE}
+# Treemap
+::: columns
+::: {.column width="40%"}
+```{r, fig.width=5,echo = FALSE}
 group <- ALL_Testing_Dataset$Štát
 value <- ALL_Testing_Dataset$Potvrdené_Prípady
 data <- data.frame(group,value)
 treemap(data, index="group", vSize="value", type="index")
-
 rm(group, value, data)
 ```
+:::
 
-## Vývoj všetkých ochorene
+::: {.column width="60%"}
+text
+:::
+:::
 
-```{r,fig.align='center',echo = FALSE}
+# Vývoj všetkých ochorenia
+::: columns
+::: {.column width="40%"}
+```{r,fig.align='right',echo = FALSE}
 new <- ALL_Covid_Dataset %>% group_by(Dátum) %>%
     summarize(cured = sum(Vyliečený),
               deaths = sum(Úmrtia),
@@ -177,10 +187,14 @@ new <- pivot_longer(new, cols = c(cured, deaths, conf), names_to = "Column", val
 new <- new[complete.cases(new),]
 ggplot(new, aes(x = Dátum, y = Value, fill = Column)) +geom_area() +labs(x = "X", y = "Y") + theme_minimal()
 
-rm(new)
 ```
+:::
 
-## kategorizácia
+::: {.column width="60%"}
+text
+:::
+:::
+# kategorizácia
 
 Aké je skúmané obdobie? Výsledky skúmaného obdobia, muži ženy trans muži 53 percent, ženy 46 percent
 
@@ -203,8 +217,6 @@ rm(vect)
 
 Veková reprezentácia 36 percent
 
-## Všeobecná tabuľka
+# Percentuálna tabuľka populácie a nakazenia
 
-## Percentuálna tabuľka populácie a nakazenia
-
-## Zhrnutie
+# Zhrnutie

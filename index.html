@@ -2,10 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.475">
+<meta name="generator" content="quarto-1.3.324">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Marek Holik">
 
 <title>Covid-analysis</title>
 <style>
@@ -17,7 +18,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
 </style>
@@ -39,9 +40,28 @@ ul.task-list li input[type="checkbox"] {
 
 <body>
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-full">
-
-<main class="content column-page" id="quarto-document-content">
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#úvod-do-problematiky" id="toc-úvod-do-problematiky" class="nav-link active" data-scroll-target="#úvod-do-problematiky">Úvod do Problematiky</a>
+  <ul class="collapse">
+  <li><a href="#analýza-dát-a-hypotézy" id="toc-analýza-dát-a-hypotézy" class="nav-link" data-scroll-target="#analýza-dát-a-hypotézy">Analýza dát a hypotézy</a></li>
+  <li><a href="#pozorovanie" id="toc-pozorovanie" class="nav-link" data-scroll-target="#pozorovanie">pozorovanie</a></li>
+  </ul></li>
+  <li><a href="#treemap" id="toc-treemap" class="nav-link" data-scroll-target="#treemap">Treemap</a></li>
+  <li><a href="#vývoj-všetkých-ochorenia" id="toc-vývoj-všetkých-ochorenia" class="nav-link" data-scroll-target="#vývoj-všetkých-ochorenia">Vývoj všetkých ochorenia</a></li>
+  <li><a href="#kategorizácia" id="toc-kategorizácia" class="nav-link" data-scroll-target="#kategorizácia">kategorizácia</a></li>
+  <li><a href="#percentuálna-tabuľka-populácie-a-nakazenia" id="toc-percentuálna-tabuľka-populácie-a-nakazenia" class="nav-link" data-scroll-target="#percentuálna-tabuľka-populácie-a-nakazenia">Percentuálna tabuľka populácie a nakazenia</a></li>
+  <li><a href="#zhrnutie" id="toc-zhrnutie" class="nav-link" data-scroll-target="#zhrnutie">Zhrnutie</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -52,6 +72,12 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Marek Holik </p>
+          </div>
+  </div>
     
   
     
@@ -60,70 +86,63 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="intro-to-covid-19" class="level2">
-<h2 class="anchored" data-anchor-id="intro-to-covid-19">Intro to Covid 19</h2>
-<div class="cell">
-
-</div>
+<section id="úvod-do-problematiky" class="level1 page-columns page-full">
+<h1>Úvod do Problematiky</h1>
+<p>Pandémia COVID-19 mala významný vplyv na Indiu, pričom táto krajina (ako aj ostatné krajiny) zaznamenala veľký počet prípadov a úmrtí v dôsledku vírusu. Vzniklo obrovské množstvo údajov, ktoré taktiež nemusia súvisieť s vírusom samotným ale s aspektami každodenného života, obsahujúce napríklad dáta o ovzduší, vzdelávaní alebo ekonomií. Tieto dáta umožnili výskumníkom, analytikom a vedcom údajov získať prehľad a pochopiť vplyv vírusu na spoločnosť.</p>
+<section id="analýza-dát-a-hypotézy" class="level2">
+<h2 class="anchored" data-anchor-id="analýza-dát-a-hypotézy">Analýza dát a hypotézy</h2>
+<p>V tomto projekte budú predstavené súbory údajov a ich následna analýza. Datasety sú verejné a ľahko dostupné na internete a obsahujú informácie o potvrdených prípadoch, úmrtiach, testovaní, hospitalizáciách, očkovaniach a iných relevantných premenných na rôznych geografických úrovniach, ako sú globálne, a regionálne. Analýza týchto súborov údajov nám môže ukázať sledovať šírenie vírusu, identifikovať trendy a prispôsobiť dôležité rozhodnutia na základe týchto faktov. Zozbierané dáta sú z časového úseku január 2020 až Máj 2021, čiže vieme aj overiť, či boli naše pozorovania vývoju pandémie pravdivé alebo nie.</p>
 </section>
-<section id="hypothesis-identifying-trends-and-patterns-in-the-spread-of-the-virus" class="level2">
-<h2 class="anchored" data-anchor-id="hypothesis-identifying-trends-and-patterns-in-the-spread-of-the-virus">Hypothesis : Identifying trends and patterns in the spread of the virus</h2>
-<div class="cell">
-
-</div>
-<div class="cell">
-
-</div>
-<div class="cell">
-
-</div>
-<div class="cell">
-
-</div>
-</section>
-<section id="population-confrimed-cases-vaccinations" class="level2">
-<h2 class="anchored" data-anchor-id="population-confrimed-cases-vaccinations">Population, Confrimed Cases, Vaccinations</h2>
+<section id="pozorovanie" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="pozorovanie">pozorovanie</h2>
 <div class="cell quarto-layout-panel" data-fig.ncol="3">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" data-angle="90" width="576"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" data-angle="90" width="384"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid figure-img" data-angle="90" width="576"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" data-angle="90" width="384"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-6-3.png" class="img-fluid figure-img" data-angle="90" width="576"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid figure-img" data-angle="90" width="384"></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
+<div class="page-columns page-full"><p>Uttar Pradesh je krajina s najväčšou populáciou s počtom 200 miliónov ľudí. Keďže je to oblasť s vysoko kvalitnou pôdou a ekonomicky výhodnými podmienkami pre obyvateľov, aj hustota populácie je zo všetkých štátov v Indií najväčšia, čo znamená, že mestské oblasti sú náchylnejšie na šírenie a prenosu vírusu.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Môžeme si všimnúť, že počet vakcinovaných ľudí je tiež najväčší, ale v tabuľke počtu nakazených ľudí je na šiestej priečke, kde bolo nakazených iba 7% celkovej populácie štátu.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;https://en.wikipedia.org/wiki/Uttar_Pradesh</p></li></div></div>
+<p>Krajina obdržala najväčší počet dávok vakcín - približne 300 miliónov, čo je vzhľadom na počet obyvateľov 130%, čiže väčšina obyvateľstva bola zaočkovaná a preto sa vírus v tejto krajine nešíril ako by sa predpokladalo. Na druhej strane krajina s najväčším počtom potvrdených prípadov je Maharashtra, ktorá podobne ako Uttar Pradesh má veľkú hustotu obyvateľstva, počet dávok je rovnako vysoko, okolo 125%. Mumbai, hlavné mesto Maharashtra, je najobývanejšie mesto v Indií s počtom obyvateľstva 20 miliónov. V centre sa nachádza taktiež najväčšie a najrušnejšie letisko Indie,Chhatrapati Shivaji Maharaj, s ročným obratom ľudí 48 miliónov, čiže potenciál šírenia vírus je veľmi vysoký. Taktiež ľudia neboli oboznámení s aktuálnymi protipandemickými opatreniami, keďže veľká časť obyvateľstva sú migrujúcich pracovníkov, ktorí prichádzajú z iných častí Indie za lepšími podmienkami.</p>
 </section>
-<section id="treemap-of-india-states-and-ratio-of-infection" class="level2">
-<h2 class="anchored" data-anchor-id="treemap-of-india-states-and-ratio-of-infection">Treemap of India States and ratio of Infection</h2>
-<div class="cell" data-layout-align="center">
+</section>
+<section id="treemap" class="level1">
+<h1>Treemap</h1>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="480"></p>
 </div>
+</div>
+</div><div class="column" style="width:60%;">
+<p>text</p>
 </div>
 </div>
 </section>
-<section id="section" class="level2">
-<h2 class="anchored" data-anchor-id="section"></h2>
-<div class="cell" data-layout-align="center">
+<section id="vývoj-všetkých-ochorenia" class="level1">
+<h1>Vývoj všetkých ochorenia</h1>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell" data-layout-align="right">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 4
   Dátum         cured deaths     conf
@@ -131,31 +150,41 @@ ul.task-list li input[type="checkbox"] {
 1 2021-08-10 31220981 429179 32036511</code></pre>
 </div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div class="quarto-figure quarto-figure-right">
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+</div><div class="column" style="width:60%;">
+<p>text</p>
+</div>
+</div>
 </section>
-<section id="categorisation" class="level2">
-<h2 class="anchored" data-anchor-id="categorisation">Categorisation</h2>
+<section id="kategorizácia" class="level1">
+<h1>kategorizácia</h1>
+<p>Aké je skúmané obdobie? Výsledky skúmaného obdobia, muži ženy trans muži 53 percent, ženy 46 percent</p>
 <div class="cell quarto-layout-panel" data-fig.ncol="1">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="cell-output-display quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" data-angle="90" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" data-angle="90" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
+<p>Veková reprezentácia 36 percent</p>
 </section>
-<section id="summary" class="level2">
-<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<section id="percentuálna-tabuľka-populácie-a-nakazenia" class="level1">
+<h1>Percentuálna tabuľka populácie a nakazenia</h1>
 </section>
+<section id="zhrnutie" class="level1">
+<h1>Zhrnutie</h1>
+</section>
+
 
 </main>
 <!-- /main column -->
@@ -186,9 +215,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -253,6 +296,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
