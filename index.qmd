@@ -183,26 +183,14 @@ Na druhej strane krajina s najväčším počtom potvrdených prípadov je Mahar
 
 Aj keď počet vakcinovaných ľudí bol relatívne vysoký, celkový počet potvrdených prípadov bolo až 6,4 milióna, čo tvorilo 4% populácie Maharashtra. 
 
-::: columns
-::: {.column width="40%"}
-```{r, fig.width=5,echo = FALSE}
+
+```{r, fig.width=10,echo = FALSE}
 group <- ALL_Testing_Dataset$Štát
 value <- ALL_Testing_Dataset$Potvrdené_Prípady
 data <- data.frame(group,value)
 treemap(data, index="group", vSize="value", type="index")
 rm(group, value, data)
 ```
-:::
-
-::: {.column width="60%"}
-```{r,echo = FALSE}
-temp<- ALL_Testing_Dataset %>% select("Štát", "Potvrdené_Prípady")
-temp[order(-temp$Potvrdené_Prípady), ] %>% datatable(class = 'cell-border stripe', rownames = FALSE, options = list(pageLength = 6,dom = 't'))
-rm(temp)
-```
-:::
-:::
-
 ## Vývoj štatistík
 ```{r,,echo = FALSE,fig.height=2, fig.width=4,warning=FALSE}
 #| column: margin
@@ -248,6 +236,51 @@ Ako sa dá vyčítať z grafov, rozdiel medzi pohlaviami je až 7 percent, čo j
 Ženy často váhali nad prijatím očkovania z rôznych dôvodov: slabá znalosť očkovania, nedostatočná pozornosť zo strany zdravotníckych pracovníkov, informovanie sa z nespoľahlivých zdrojov a mylné predstavy o vedľajších účinkoch vakcín. Obavy o bezpečnosť a účinnosť vakcín vrátane obáv z neznámych dlhodobých účinkov, súvisiace s tehotenstvom atď..^[Massimi, A., Rosso, A., Marzuillo, C., Prencipe, G., Soccio, P.D., Adamo, G., Sturabotti, G., Vacchio, M.R., Vito, C.D., & Villari, P. (2017). Childhood vaccinations. Validation of a tool for measuring knowledge, attitudes and vaccine hesitancy in pregnant women. Epidemiology, Biostatistics, and Public Health.]
 
 Štúdia zistila, že biologické pohlavie taktiež ovplyvňuje výsledky nakazenia, pričom muži majú väčšiu komorbiditu a vyššiu úmrtnosť ako ženy, ktoré namiesto toho zaznamenali viac postihnutia a dlhšie prežitie. Ďalšia štúdia zistila, že mužské pohlavie bolo hlavným prediktorom prijatia na jednotku intenzívnej starostlivosti (JIS) v dôsledku infekcie spolu s prítomnosťou obezity, chronického ochorenia obličiek a hypertenzie.
+
+## Pravdepodobnosť ochorenia
+
+Štúdie ukázali, že presnosť testov na COVID-19 sa môže líšiť v závislosti od citlivosti a špecifickosti testu a prevalencie vírusu v testovanej populácii. Môžu sa vyskytnúť falošne pozitívne výsledky testov, čo vedie k zbytočnej karanténe a liečbe, zatiaľ čo falošne negatívne výsledky môžu viesť k šíreniu vírusu.
+
+Pri skúmaní štúdií ohľadom účinnosti testov sme zistili, že rôzne štúdie vracajú rôzne percentuálne hodnoty. Napríklad test IgM/IgG mal v ôsmich rôznych štúdiach hodnoty v rozmedzí od 73,9% do 100%, kde priemer bol približne do 94.5% pri jednom testovaní. Aby sa predišlo falošnej pozitivite, ak sa človek otestuje na 2 a viac testoch, presnosť testu sa zvýši. [^8]
+
+[^8]: Xiao, X., Zhou, Q., Zhu, J., Sun, L., Zhang, H., Sun, Y., Zhao, J., & Cui, L. (2021). False-positive colloidal gold-based immunochromatographic strip assay reactions for antibodies to SARS-CoV-2 in patients with autoimmune diseases. Annals of translational medicine, 9(7), 534. <https://doi.org/10.21037/atm-20-6509>
+
+Na výpočet môžeme použiť napríklad Bayesovu vetu. Pozri @fig-Thomas-Bayes^[![Thomas Bayes](Thomas_Bayes.jpg){#fig-Thomas-Bayes}]. Bayesova veta je matematický vzorec, ktorý popisuje pravdepodobnosť udalosti na základe predchádzajúcej znalosti podmienok, ktoré môžu súvisieť s udalosťou. Môže sa použiť na výpočet pravdepodobnosti, že osoba bude mať pozitívny výsledok testu:
+
+
+$$
+{\color{Orange} {\color{bayesorange} P (\text{Choroba} \mid \text{Pozitivita})}} =
+\frac {{\color{brown}  {\color{bayesred} P (\text{Choroba})}} \times 
+{\color{brown} {\color{bayesblue} P (\text{Poz} \mid \text{Choroba})}}}
+{{\color{grey} {{\color{grey} P(\text{Poz})}}}}
+$$
+
+kde
+
+$$
+{\color{Orange} {\color{bayesorange} P (\text{Choroba} \mid \text{Pozitivita})}}
+$$
+
+reprezentuje pravdepodobnosť, že mám chorobu, a bol som pozitívne testovaný.
+
+$$
+\frac {{\color{brown}  {\color{bayesred} P (\text{Choroba})}} \times 
+{\color{brown} {\color{bayesblue} P (\text{Poz} \mid \text{Choroba})}}}
+{{\color{grey} {{\color{grey} P(\text{Poz})}}}}
+$$
+
+reprezentuje pravdepodobnosť matia choroby, krát pravdepodobnosť, aká je šanca, že som pozitívny, keď mám pozitívny test, deleno pravdepodobnosť účinosti testov. Čo sa dá dalej rozpísať ako pravdepobnosť pozitívneho výsledku pri testovaní plus negatívneho výsledku pri testovaní. 
+$$
+{{\color{grey} {{\color{grey} P(\text{Poz})}}}} =
+{{\color{brown} {\color{bayesred} P (\text{Choroba})}}} \times
+{\color{brown} {\color{bayesblue} P (\text{Poz} \mid \text{Choroba})}} \ + \
+{{\color{brown} {\color{bayesred} P (\text{-Choroba})}}} \times
+{\color{brown} {\color{bayesblue} P (\text{Poz}\mid \text{-Choroba})}}
+$$ Čiže v našom prípade, keď predpokladáme, že účinnosť testov je 95%, a výskyt choroby v populácií je 1:181, čo reprezentuje pravdepodobnosť 0.005 dostávame:
+
+$$
+0.08=\frac{0.005 \times 0.95}{0.005 \times 0.95 \ + \ 0.995 \times 0.05}
+$$ čiže ak by sme sa teraz otestovali a dostali by sme pozítvny výsledok, je iba 8% šanca, že sme skutočne pozitívny. Pri opakovaní testu by sa ale pravdepodobnosť mnohokrát zvýšila, približne ku hodnote 62%.
 
 ## Zhrnutie
 
